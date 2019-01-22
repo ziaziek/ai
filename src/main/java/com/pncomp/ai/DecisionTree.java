@@ -1,0 +1,46 @@
+package com.pncomp.ai;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DecisionTree<T extends TreeNode> {
+
+    public T getRootNode() {
+        return rootNode;
+    }
+
+    private T rootNode;
+
+    public DecisionTree(){};
+
+    public DecisionTree(T root){
+        this.rootNode=root;
+    }
+
+    public List<T> findAllLeaves(){
+        List<T> myLeaves=new ArrayList<>();
+        leaves(rootNode, myLeaves);
+        return myLeaves;
+    }
+
+    private void leaves(TreeNode localRoot, List<T> leaves){
+        if(!localRoot.isLeafNode()){
+            for(TreeNode node: localRoot.getChildren()){
+                leaves(node, leaves);
+            }
+        } else {
+            leaves.add((T)localRoot);
+        }
+    }
+
+    public int countNodes(TreeNode n, Integer c){
+        if(!n.isLeafNode()){
+            for(TreeNode tn : n.getChildren()){
+                c+=countNodes(tn, c);
+            }
+        } else {
+            c+=1;
+        }
+        return  c;
+    }
+}
