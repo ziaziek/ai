@@ -33,13 +33,18 @@ public class DecisionTree<T extends TreeNode> {
         }
     }
 
-    public int countNodes(TreeNode n, Integer c){
+    public int countAllNodes(TreeNode n){
+        Integer p = 0;
+        p = countNodes(n, p);
+        return p;
+    }
+
+    private int countNodes(TreeNode n, Integer c){
+        c++;
         if(!n.isLeafNode()){
             for(TreeNode tn : n.getChildren()){
-                c+=countNodes(tn, c);
+                c+=countNodes(tn, 0);
             }
-        } else {
-            c+=1;
         }
         return  c;
     }

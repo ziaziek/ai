@@ -22,16 +22,15 @@ public class TreeTests {
     public  void  countLeavesTests(){
         TreeNode tn = new TreeNode(null);
         DecisionTree dt = new DecisionTree(tn);
-        Integer i = dt.countNodes(dt.getRootNode(), 1);
-        assertEquals(1, dt.countNodes(dt.getRootNode(), i));
+        assertEquals(1, dt.countAllNodes(dt.getRootNode()));
         tn.addChild(new BinaryNode());
-        assertEquals(2, dt.countNodes(dt.getRootNode(), i));
+        assertEquals(2, dt.countAllNodes(dt.getRootNode()));
         tn.addChild(new TreeNode());
-        assertEquals(3, dt.countNodes(dt.getRootNode(), i));
+        assertEquals(3, dt.countAllNodes(dt.getRootNode()));
         TreeNode tn11 = new BinaryNode();
         tn.addChild(tn11);
-        assertEquals(4, dt.countNodes(dt.getRootNode(), i));
+        assertEquals(4, dt.countAllNodes(dt.getRootNode()));
         tn11.addChild(new BinaryNode());
-        assertEquals(5, dt.countNodes(dt.getRootNode(), i));
+        assertEquals(5, dt.countAllNodes(dt.getRootNode()));
     }
 }
