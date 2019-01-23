@@ -63,4 +63,11 @@ public class TreeNode {
     public void setAttribute(final String attributeName, final Object value){
         attributes.put(attributeName, value);
     }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        getAttributes().forEach((x,y)-> {sb.append(x); sb.append(": "); sb.append(y.toString()); sb.append("\n");});
+        return sb.toString();
+    }
 }
