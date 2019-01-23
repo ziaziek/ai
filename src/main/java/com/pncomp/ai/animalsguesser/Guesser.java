@@ -3,7 +3,6 @@ package com.pncomp.ai.animalsguesser;
 import com.pncomp.ai.BinaryNode;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Guesser {
@@ -21,47 +20,51 @@ public class Guesser {
         tree=new DecisionTree(root);
         s = new Scanner(System.in);
         String continueAnswer="Y";
-        try{
         while(!"N".equalsIgnoreCase(continueAnswer)){
-            learn(tree);
+            learnAndTeach(tree);
             System.out.println("Continue? (Y/N)");
             continueAnswer=s.next();
             ix=0;
         }
-        } catch(IOException ex){
-            ex.printStackTrace();
-        }
 
     }
 
-    protected void learn(DecisionTree<BinaryNode> tree) throws IOException {
-        TreeNode n = tree.getRootNode();
-        boolean found=false;
-        while(ix<questions.length && !found){
-            System.out.println(n);
-            if(n.isLeafNode() && n.findAttribute("Animal") !=null){
-                System.out.println("Myślę, że jest to "+ n.findAttribute("Animal"));
-                found=true;
-            } else {
-                System.out.println(questions[(int)n.findAttribute("Q")]);
-                final String answer=s.next();
-                if(ix==questions.length-1){
-                    n.setAttribute("Animal", answer);
-                } else {
-                    TreeNode aNode= n.getChildren().stream().filter(x -> answer.equals(x.findAttribute("A"))).findFirst().orElse(null);
-                    if(aNode!=null){
-                        n=aNode;
-                    }
-                    else {
-                        aNode = buildNode(answer);
-                        n.addChild(aNode);
-                        n = aNode;
-                    }
-                }
-            }
+    protected boolean reachedEndOfGuessPath(final TreeNode n){
+        return n.isLeafNode() && n.findAttribute("Animal") !=null;
+    }
 
+    protected void learnAndTeach(DecisionTree<BinaryNode> tree) {
+        TreeNode n = tree.getRootNode();
+        while(ix<questions.length && !(reachedEndOfGuessPath(n) && isAnswerFound(n))){
+            n = runGuessingCycle(n);
             ix++;
         }
+    }
+
+    protected TreeNode runGuessingCycle(TreeNode n) {
+        System.out.println(questions[(int)n.findAttribute("Q")]);
+        final String answer=s.next();
+        if(ix==questions.length-1){
+            n.setAttribute("Animal", answer);
+        } else {
+            TreeNode aNode= n.getChildren().stream().filter(x -> answer.equalsIgnoreCase(x.findAttribute("A").toString())).findFirst().orElse(null);
+            if(aNode!=null){
+                n=aNode;
+            }
+            else {
+                aNode = buildNode(answer);
+                n.addChild(aNode);
+                n = aNode;
+            }
+    }
+        return n;
+    }
+
+    protected boolean isAnswerFound(TreeNode n) {
+        boolean found;
+        System.out.println("Myślę, że jest to "+ n.findAttribute("Animal"));
+        found=true;
+        return found;
     }
 
     private TreeNode buildNode(final String answer){
