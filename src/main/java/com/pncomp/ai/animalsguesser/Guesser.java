@@ -7,10 +7,6 @@ import java.util.Scanner;
 
 public class Guesser {
 
-    private static final String QUESTION_MARK = "Q";
-    private static final String ANSWER_MARK = "A";
-    private static final String ANIMAL_MARK="Animal";
-
     private static String[] questions={"Czy to zwierzę lądowe?", "Czy to ssak?", "Czy to zwierzę domowe?", "Czy to zwierzę ma futro?",
     "Co to za zwierzę?"};
     Scanner s;
@@ -18,11 +14,14 @@ public class Guesser {
 
     private int ix=0;
 
-    public Guesser(){
+    public Guesser(final Scanner s){
         BinaryNode root = new BinaryNode();
-        root.setAttribute(QUESTION_MARK, questions[ix]);
+        root.setAttribute("Q", ix);
         tree=new DecisionTree(root);
-        s = new Scanner(System.in);
+        this.s = s;
+    }
+
+    public DecisionTree run(){
         String continueAnswer="Y";
         while(!"N".equalsIgnoreCase(continueAnswer)){
             learnAndTeach(tree);
@@ -30,61 +29,51 @@ public class Guesser {
             continueAnswer=s.next();
             ix=0;
         }
+        return this.tree;
     }
 
     protected boolean reachedEndOfGuessPath(final TreeNode n){
-        return n.isLeafNode() && n.findAttribute(ANIMAL_MARK) !=null;
+        return n.isLeafNode() && n.findAttribute("Animal") !=null;
     }
 
     protected void learnAndTeach(DecisionTree<BinaryNode> tree) {
         TreeNode n = tree.getRootNode();
-        while(!(reachedEndOfGuessPath(n) && isAnswerFound(n))){
+        while(ix<questions.length && !(reachedEndOfGuessPath(n) && isAnswerFound(n))){
             n = runGuessingCycle(n);
             ix++;
         }
     }
 
     protected TreeNode runGuessingCycle(TreeNode n) {
-        System.out.println(n.findAttribute(QUESTION_MARK));
-        final String answer=s.nextLine();
+        System.out.println(questions[(int)n.findAttribute("Q")]);
+        final String answer=s.next();
+        if(ix==questions.length-1){
+            n.setAttribute("Animal", answer);
+        } else {
             TreeNode aNode= n.getChildren().stream().filter(x -> answer.equalsIgnoreCase(x.findAttribute("A").toString())).findFirst().orElse(null);
             if(aNode!=null){
                 n=aNode;
             }
             else {
-                if(ix<questions.length-1){
-                    aNode = buildNode(answer, questions[ix+1]);
-                    n.addChild(aNode);
-                } else {
-                    System.out.println("Jakie pytanie odróżnia to zwierze?");
-                    final String question = s.nextLine();
-                    aNode = new BinaryNode();
-                    aNode.setAttribute(QUESTION_MARK, question);
-                    aNode.setAttribute(ANSWER_MARK, "T");
-                    TreeNode parent = n.getParent();
-                    n.setParent(aNode);
-                    aNode.setParent(parent);
-                    n.setAttribute(ANIMAL_MARK, answer);
-                    n.setAttribute(ANSWER_MARK, "T");
-                }
+                aNode = buildNode(answer);
+                n.addChild(aNode);
                 n = aNode;
             }
+    }
         return n;
     }
 
     protected boolean isAnswerFound(TreeNode n) {
-        if(n.findAttribute(ANIMAL_MARK)!=null){
-            System.out.println("Myślę, że jest to "+ n.findAttribute(ANIMAL_MARK));
-            return true;
-        } else {
-            return false;
-        }
+        boolean found;
+        System.out.println("Myślę, że jest to "+ n.findAttribute("Animal"));
+        found=true;
+        return found;
     }
 
-    private TreeNode buildNode(final String answer, final String question){
+    private TreeNode buildNode(final String answer){
         TreeNode n = new BinaryNode();
-        n.setAttribute(ANSWER_MARK, answer);
-        n.setAttribute(QUESTION_MARK, question);
+        n.setAttribute("A", answer);
+        n.setAttribute("Q", ix+1);
         return n;
     }
 
