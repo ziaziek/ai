@@ -7,8 +7,9 @@ import java.util.Scanner;
 
 public class Guesser {
 
-    private static String[] questions={"Czy to zwierzę lądowe?", "Czy to ssak?", "Czy to zwierzę domowe?", "Czy to zwierzę ma futro?",
-    "Co to za zwierzę?"};
+    private static String[] questions={"Czy to zwierzę lądowe?", "Czy to ssak?", "Czy to zwierzę domowe?", "Czy to zwierzę ma futro?"};
+    private static final String WHAT_ANIMAL_QUESTION="Co to za zwierzę?";
+    private static final String DETAILING_QUESTION="Jakie pytanie odróżnia to zwierzę?";
     Scanner s;
     private DecisionTree<BinaryNode> tree;
 
@@ -16,9 +17,10 @@ public class Guesser {
 
     public Guesser(final Scanner s){
         BinaryNode root = new BinaryNode();
-        root.setAttribute("Q", ix);
+        root.setAttribute("Q", questions[ix]);
         tree=new DecisionTree(root);
         this.s = s;
+        s.useDelimiter("\n");
     }
 
     public DecisionTree run(){
@@ -38,28 +40,37 @@ public class Guesser {
 
     protected void learnAndTeach(DecisionTree<BinaryNode> tree) {
         TreeNode n = tree.getRootNode();
-        while(ix<questions.length && !(reachedEndOfGuessPath(n) && isAnswerFound(n))){
+        while(!(reachedEndOfGuessPath(n) && isAnswerFound(n))){
             n = runGuessingCycle(n);
             ix++;
         }
     }
 
     protected TreeNode runGuessingCycle(TreeNode n) {
-        System.out.println(questions[(int)n.findAttribute("Q")]);
+        System.out.println(n.findAttribute("Q"));
         final String answer=s.next();
-        if(ix==questions.length-1){
-            n.setAttribute("Animal", answer);
-        } else {
+
             TreeNode aNode= n.getChildren().stream().filter(x -> answer.equalsIgnoreCase(x.findAttribute("A").toString())).findFirst().orElse(null);
             if(aNode!=null){
                 n=aNode;
             }
             else {
-                aNode = buildNode(answer);
+                if(ix<questions.length-1) {
+                    aNode = buildNode(answer, questions[ix + 1]);
+                } else {
+                    System.out.println(WHAT_ANIMAL_QUESTION);
+                    final String animQ=s.next();
+                    System.out.println(DETAILING_QUESTION);
+                    final String detailingQ = s.next();
+                    aNode = buildNode(answer, detailingQ);
+                    n.addChild(aNode);
+                    n=aNode;
+                    aNode = buildNode("T", null);
+                    aNode.setAttribute("Animal", animQ);
+                }
                 n.addChild(aNode);
                 n = aNode;
             }
-    }
         return n;
     }
 
@@ -70,10 +81,10 @@ public class Guesser {
         return found;
     }
 
-    private TreeNode buildNode(final String answer){
+    private TreeNode buildNode(final String answer, final String question){
         TreeNode n = new BinaryNode();
         n.setAttribute("A", answer);
-        n.setAttribute("Q", ix+1);
+        n.setAttribute("Q", question);
         return n;
     }
 

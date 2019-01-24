@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class IterativeLearningTest {
 
-    private static final String piesDelfin = "t\nt\nt\nn\npies\ny\nn\nt\nn\nn\ndelfin\nn";
+    private static final String piesDelfin = "t\nt\nt\nn\npies\nCzy szczeka?\ny\nn\nt\nn\nn\ndelfin\nCzy szybko pływa?\nn";
 
     private Guesser dt;
 
@@ -30,7 +30,7 @@ public class IterativeLearningTest {
     public void testGuesser(){
         DecisionTree tree = dt.run();
         assertNotNull(tree);
-        assertEquals(9, tree.countAllNodes(tree.getRootNode()));
+        assertEquals(11, tree.countAllNodes(tree.getRootNode()));
         assertEquals(2, tree.findAllLeaves().size());
         assertEquals(1, tree.findAllLeaves().stream().filter(x->((BinaryNode)x).findAttribute("Animal").equals("delfin")).count());
         assertEquals(1, tree.findAllLeaves().stream().filter(x->((BinaryNode)x).findAttribute("Animal").equals("pies")).count());
