@@ -9,16 +9,20 @@ public class Guesser {
 
     private static String[] questions={"Czy to zwierzę lądowe?", "Czy to ssak?", "Czy to zwierzę domowe?", "Czy to zwierzę ma futro?",
     "Co to za zwierzę?"};
+
     Scanner s;
     private DecisionTree<BinaryNode> tree;
 
     private int ix=0;
 
-    public Guesser(){
+    public Guesser(final Scanner s){
         BinaryNode root = new BinaryNode();
         root.setAttribute("Q", ix);
         tree=new DecisionTree(root);
-        s = new Scanner(System.in);
+        this.s = s;
+    }
+
+    public DecisionTree run(){
         String continueAnswer="Y";
         while(!"N".equalsIgnoreCase(continueAnswer)){
             learnAndTeach(tree);
@@ -26,7 +30,7 @@ public class Guesser {
             continueAnswer=s.next();
             ix=0;
         }
-
+        return this.tree;
     }
 
     protected boolean reachedEndOfGuessPath(final TreeNode n){
