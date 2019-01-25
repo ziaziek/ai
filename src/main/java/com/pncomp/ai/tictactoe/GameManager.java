@@ -2,12 +2,22 @@ package com.pncomp.ai.tictactoe;
 
 public class GameManager {
 
+    public int[] getBoard() {
+        return board;
+    }
+
     private int[] board;
 
     public static final int TIC = 1;
     public static final int TAC = -1;
+
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     private int currentPlayer;
     private int size=3;
+    private int nPlayers=2;
 
     public GameManager(){
         board = new int[9];
@@ -16,6 +26,33 @@ public class GameManager {
     public GameManager(final int size){
         board = new int[size*size];
         this.size=size;
+    }
+
+    public void placeSymbol(int symbol, int place){
+        if(canPlaceSymbol(place)){
+            if(!isGameOver(symbol, place)){
+                board[place]=symbol;
+                nextPlayer();
+            } else {
+                doGameOver();
+            }
+        }
+    }
+
+    private void doGameOver() {
+        System.out.println("Game over. Player "+currentPlayer+" wins.");
+    }
+
+    private void nextPlayer() {
+        currentPlayer=(currentPlayer+1)%nPlayers;
+    }
+
+    public void placeSymbol(int symbol, int x, int y){
+        try {
+            placeSymbol(symbol, convertCoordinates(x,y));
+        } catch (CoordinatesException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean canPlaceSymbol(final int place){
@@ -47,7 +84,7 @@ public class GameManager {
                 p=board[ix]!=symbol;
                 ix+=size;
             }
-            return p;
+            return !p;
         } else {
             return false;
         }
@@ -69,7 +106,7 @@ public class GameManager {
             p = board[byRow?convertCoordinates(ix, rc): convertCoordinates(rc, ix)] != symbol;
             ix++;
         }
-        return p;
+        return !p;
     }
 
     private boolean sameSymbolInRow(int symbol, int place) {
