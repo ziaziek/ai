@@ -1,12 +1,27 @@
 package com.pncomp.ai.tictactoe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class GameManager {
 
-    public int[] getBoard() {
-        return board;
+    public List<Integer> getBoard() {
+        List<Integer> r = new ArrayList<>();
+        for(int p: board){
+            r.add(p);
+        }
+        return Collections.unmodifiableList(r);
     }
 
     private int[] board;
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    private boolean gameOver;
 
     public static final int TIC = 1;
     public static final int TAC = -1;
@@ -30,8 +45,8 @@ public class GameManager {
 
     public void placeSymbol(int symbol, int place){
         if(canPlaceSymbol(place)){
+            board[place]=symbol;
             if(!isGameOver(symbol, place)){
-                board[place]=symbol;
                 nextPlayer();
             } else {
                 doGameOver();
@@ -40,6 +55,7 @@ public class GameManager {
     }
 
     private void doGameOver() {
+        gameOver=true;
         System.out.println("Game over. Player "+currentPlayer+" wins.");
     }
 
@@ -56,7 +72,7 @@ public class GameManager {
     }
 
     private boolean canPlaceSymbol(final int place){
-        return board[place]==0;
+        return !gameOver && board[place]==0;
     }
 
     private boolean canPlaceSymbol(final int x, final int y) throws CoordinatesException {
@@ -65,7 +81,7 @@ public class GameManager {
 
     private int convertCoordinates(int x, int y) throws CoordinatesException {
         if(x<size && y<size){
-            return x + y* board.length;
+            return x + y* size;
         } else {
             throw new CoordinatesException();
         }
@@ -77,17 +93,20 @@ public class GameManager {
 
     private boolean sameSymbolDiagonal(int symbol, int place) {
         //Done for main diagonals only. May need to be reworked for larger boards.
-        if(place%size==place/size){
             int ix=0;
-            boolean p=false;
-            while(ix<size*size && !p){
-                p=board[ix]!=symbol;
-                ix+=size;
+            boolean p=false, q = false;
+            while(ix<size && !(p && q)){
+                try {
+                    p=board[convertCoordinates(ix, ix)]!=symbol;
+                    q = board[convertCoordinates(ix, size-ix-1)]!=symbol;
+                } catch (CoordinatesException e) {
+                    e.printStackTrace();
+                    p=true;
+                    q=true;
+                }
+                ix++;
             }
-            return !p;
-        } else {
-            return false;
-        }
+            return !(p && q);
     }
 
     private boolean sameSymbolInColumn(int symbol, int place) {
