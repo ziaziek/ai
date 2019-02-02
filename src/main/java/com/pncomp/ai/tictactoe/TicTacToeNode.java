@@ -1,8 +1,7 @@
 package com.pncomp.ai.tictactoe;
+import com.pncomp.ai.TreeNode;
 
-import com.pncomp.ai.BinaryNode;
-
-public class TicTacToeNode extends BinaryNode {
+public class TicTacToeNode extends TreeNode {
 
     public static final String ATTR_MOVE= "move";
     public static final String ATTR_SYMBOL = "symbol";
