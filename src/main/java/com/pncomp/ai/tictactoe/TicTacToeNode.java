@@ -7,6 +7,14 @@ public class TicTacToeNode extends TreeNode {
     public static final String ATTR_SYMBOL = "symbol";
     public static final String ATTR_RESULT = "result";
 
+    public TicTacToeNode(TicTacToeNode root){
+        super(root);
+    }
+
+    public TicTacToeNode(){
+        super();
+    }
+
     public void setMove(int m, int symbol){
         setAttribute(ATTR_MOVE, m);
         setAttribute(ATTR_SYMBOL, symbol);
