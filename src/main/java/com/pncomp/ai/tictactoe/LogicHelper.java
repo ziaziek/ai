@@ -1,5 +1,6 @@
 package com.pncomp.ai.tictactoe;
 
+import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class LogicHelper {
         List<TreeNode> candidates = new ArrayList<>();
         for(TreeNode n : node.getChildren()){
             TicTacToeNode tn = (TicTacToeNode)n;
-            if(hasWinningLeaf(tn, tn.getMove()[0])){
+            if(hasWinningLeaf(tn, tn.getMove()[1])){
                 candidates.add(n);
             }
         }
@@ -30,8 +31,8 @@ public class LogicHelper {
 
     private static boolean hasWinningLeaf(TicTacToeNode n, int symbol) {
 
-        return findAllLeaves(n, new ArrayList<>()).stream().anyMatch(x -> symbol == x.getMove()[1]
-                && Boolean.TRUE.equals(x.getResult()));
+        return new DecisionTree<>(n).findAllLeaves().stream().anyMatch(x -> symbol == x.getMove()[1]
+                && x.getResult());
 
     }
 

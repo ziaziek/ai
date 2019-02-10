@@ -53,6 +53,21 @@ public class GameManager {
         }
     }
 
+    public void printOutBoard(){
+        final StringBuilder b = new StringBuilder();
+        for(int i = 0; i<size; i++){
+            for(int j=0; j<size; j++){
+                try {
+                    b.append(getBoard().get(convertCoordinates(i,j))).append("|");
+                } catch (CoordinatesException e) {
+                    e.printStackTrace();
+                }
+            }
+            b.append("-+-+-");
+        }
+        System.out.println(b.toString());
+    }
+
     private void doGameOver() {
         gameOver=true;
         System.out.println("Game over. Player "+currentPlayer+" wins.");
