@@ -1,5 +1,7 @@
 package com.pncomp.ai.tictactoe;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +24,16 @@ public class GameManager {
 
     private boolean gameOver;
 
-    public static final int TIC = 1;
-    public static final int TAC = -1;
+    public static final int TIC = -1;
+    public static final int TAC = 1;
 
     public int getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    //TODO: may be better to create a player class which would hold the symbol. Some better associaten between the player and symbol
+    public int getCurrentPlayerSymbol(){
+        return getCurrentPlayer()==0? TIC:TAC;
     }
 
     private int currentPlayer;
@@ -48,8 +55,10 @@ public class GameManager {
             if(!isGameOver(symbol, place)){
                 nextPlayer();
             } else {
-                doGameOver();
+                doGameOver(symbol, place);
             }
+        } else {
+            System.out.println("Cannot place symmbol there. Try again.");
         }
     }
 
@@ -63,18 +72,21 @@ public class GameManager {
                     e.printStackTrace();
                 }
             }
-            b.append("-+-+-");
+            b.append("\n");
+            b.append("-+-+-\n");
         }
         System.out.println(b.toString());
     }
 
-    private void doGameOver() {
+    private void doGameOver(int symbol, int place) {
         gameOver=true;
         System.out.println("Game over. Player "+currentPlayer+" wins.");
+        EventBusFactory.getEventBus().post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
     }
 
     private void nextPlayer() {
         currentPlayer=(currentPlayer+1)%nPlayers;
+        EventBusFactory.getEventBus().post(new GameEvent());
     }
 
     public void placeSymbol(int symbol, int x, int y){
@@ -93,7 +105,7 @@ public class GameManager {
         return canPlaceSymbol(convertCoordinates(x,y));
     }
 
-    private int convertCoordinates(int x, int y) throws CoordinatesException {
+    public int convertCoordinates(int x, int y) throws CoordinatesException {
         if(x<size && y<size){
             return x + y* size;
         } else {
@@ -136,7 +148,8 @@ public class GameManager {
         int ix=0;
         boolean p=false;
         while (ix < size && !p) {
-            p = board[byRow?convertCoordinates(ix, rc): convertCoordinates(rc, ix)] != symbol;
+            int crc = byRow?convertCoordinates(ix, rc): convertCoordinates(rc, ix);
+            p = board[crc] != symbol;
             ix++;
         }
         return !p;
