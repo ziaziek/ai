@@ -15,15 +15,14 @@ public class Main {
     public static void main(String[] args){
         builder = new DecisionTreeBuilder(new DecisionTree(new TicTacToeNode()));
         Scanner scanner = new Scanner(System.in);
-        GameManager gm = new GameManager();
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;
         while(playOn){
-            playGame(builder, scanner, gm);
+            playGame(builder, scanner, new GameManager());
             System.out.println("Nowa gra? (Y/N)");
             playOn="y".equalsIgnoreCase(scanner.next());
         }
-
+        System.out.printf("Thank you.");
     }
 
     private static void playGame(DecisionTreeBuilder builder, Scanner scanner, GameManager gm) {
