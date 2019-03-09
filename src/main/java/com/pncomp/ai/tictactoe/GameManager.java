@@ -1,7 +1,5 @@
 package com.pncomp.ai.tictactoe;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +51,7 @@ public class GameManager {
         if(canPlaceSymbol(place)){
             board[place]=symbol;
             if(!isGameOver(symbol, place)){
-                nextPlayer();
+                nextPlayer(symbol, place);
             } else {
                 doGameOver(symbol, place);
             }
@@ -84,9 +82,9 @@ public class GameManager {
         EventBusFactory.getEventBus().post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
     }
 
-    private void nextPlayer() {
+    private void nextPlayer(int symbol, int place) {
+        EventBusFactory.getEventBus().post(new GameEvent(this, new BoardState(place, symbol), currentPlayer));
         currentPlayer=(currentPlayer+1)%nPlayers;
-        EventBusFactory.getEventBus().post(new GameEvent());
     }
 
     public void placeSymbol(int symbol, int x, int y){

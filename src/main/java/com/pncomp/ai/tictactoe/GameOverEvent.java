@@ -12,7 +12,7 @@ public class GameOverEvent extends GameEvent {
     private int winningPlayer;
 
     public GameOverEvent(Object sender, BoardState state,int winningPlayer) {
-        super(sender, state);
+        super(sender, state, winningPlayer);
         this.winningPlayer=winningPlayer;
     }
 

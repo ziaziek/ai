@@ -13,8 +13,15 @@ public class GameEvent {
     private Object sender;
     private BoardState state;
 
-    public GameEvent(Object sender, BoardState state) {
+    public int getPlayer() {
+        return player;
+    }
+
+    private int player;
+
+    public GameEvent(Object sender, BoardState state, int player) {
         this.sender = sender;
         this.state = state;
+        this.player = player;
     }
 }

@@ -1,4 +1,3 @@
-import com.google.common.eventbus.EventBus;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
 import com.pncomp.ai.tictactoe.*;
@@ -33,17 +32,19 @@ public class Main {
             gm.printOutBoard();
             int position=-1;
             //human makes a move
-            while (cp==gm.getCurrentPlayer() || !gm.isGameOver()){
+            while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
                 System.out.println("Make a move (enter coordinates): ");
                 int[] coords= getUserCoordinates(scanner);
                 try {
                     position=gm.convertCoordinates(coords[0], coords[1]);
                     gm.placeSymbol(gm.getCurrentPlayerSymbol(), coords[0], coords[1]);
+                    System.out.println("Current player:" + gm.getCurrentPlayer());
                 } catch (CoordinatesException e) {
                     e.printStackTrace();
                 }
             }
 
+            System.out.println("Computer, make a move.");
             //computer makes a move
             if(LogicHelper.isMoveNodeFound(position, gm.getCurrentPlayer(), builder.getCurrentNode())) {
                 System.out.println("Found move in my decision tree.");
@@ -69,7 +70,7 @@ public class Main {
 
         }
         //add the last position as a result node, if it doesn't exist yet
-        
+        gm.printOutBoard();
     }
 
     private static int findRandomCandidate(List<TreeNode> candidates) {
