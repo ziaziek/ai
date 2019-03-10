@@ -14,7 +14,7 @@ public class GameManager {
         return Collections.unmodifiableList(r);
     }
 
-    private int[] board;
+    protected int[] board;
 
     public boolean isGameOver() {
         return gameOver;
@@ -35,6 +35,12 @@ public class GameManager {
     }
 
     private int currentPlayer;
+
+    public int getWinningPlayer() {
+        return winningPlayer;
+    }
+
+    private int winningPlayer = -1;
     private int size=3;
     private int nPlayers=2;
 
@@ -50,7 +56,7 @@ public class GameManager {
     public void placeSymbol(int symbol, int place){
         if(canPlaceSymbol(place)){
             board[place]=symbol;
-            if(!isGameOver(symbol, place)){
+            if (!boardWillBeFull() && !isGameWon(symbol, place)) {
                 nextPlayer(symbol, place);
             } else {
                 doGameOver(symbol, place);
@@ -78,7 +84,7 @@ public class GameManager {
 
     private void doGameOver(int symbol, int place) {
         gameOver=true;
-        System.out.println("Game over. Player "+currentPlayer+" wins.");
+        System.out.println("Game over.");
         EventBusFactory.getEventBus().post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
     }
 
@@ -110,19 +116,25 @@ public class GameManager {
             throw new CoordinatesException();
         }
     }
-    
-    private boolean isGameOver(final int symbol, final int place){
-        return sameSymbolInRow(symbol, place) || sameSymbolInColumn(symbol, place) || sameSymbolDiagonal(symbol, place);
+
+
+    private boolean isGameWon(final int symbol, final int place) {
+        boolean p = sameSymbolInRow(symbol, place) || sameSymbolInColumn(symbol, place) || sameSymbolDiagonal(symbol, place);
+        if (p) {
+            winningPlayer = currentPlayer;
+            System.out.println("Player " + winningPlayer + " wins.");
+        }
+        return p;
     }
 
     private boolean sameSymbolDiagonal(int symbol, int place) {
         //Done for main diagonals only. May need to be reworked for larger boards.
             int ix=0;
-            boolean p=false, q = false;
-            while(ix<size && !(p && q)){
+        boolean p = true, q = true;
+        while (ix < size) {
                 try {
-                    p=board[convertCoordinates(ix, ix)]!=symbol;
-                    q = board[convertCoordinates(ix, size-ix-1)]!=symbol;
+                    p = p && board[convertCoordinates(ix, ix)] == symbol;
+                    q = q && board[convertCoordinates(ix, size - ix - 1)] == symbol;
                 } catch (CoordinatesException e) {
                     e.printStackTrace();
                     p=true;
@@ -130,7 +142,7 @@ public class GameManager {
                 }
                 ix++;
             }
-            return !(p && q);
+        return p || q;
     }
 
     private boolean sameSymbolInColumn(int symbol, int place) {
@@ -160,5 +172,13 @@ public class GameManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private boolean boardWillBeFull() {
+        return getBoard().stream().filter(x -> x != 0).count() >= size * size - 1;
+    }
+
+    public boolean isDraw() {
+        return isGameOver() && boardWillBeFull() && winningPlayer == -1;
     }
 }
