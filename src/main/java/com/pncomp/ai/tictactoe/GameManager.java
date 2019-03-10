@@ -175,7 +175,7 @@ public class GameManager {
     }
 
     private boolean boardWillBeFull() {
-        return getBoard().stream().filter(x -> x != 0).count() >= size * size - 1;
+        return getBoard().stream().filter(x -> x != 0).count() == size * size;
     }
 
     public boolean isDraw() {

@@ -43,28 +43,31 @@ public class Main {
                 }
             }
 
-            System.out.println("Computer, make a move.");
-            //computer makes a move
-            if(LogicHelper.isMoveNodeFound(position, gm.getCurrentPlayer(), builder.getCurrentNode())) {
-                System.out.println("Found move in my decision tree.");
-                List<TreeNode> candidates = LogicHelper.findWinningCandidates(builder.getCurrentNode());
-                cp = gm.getCurrentPlayer();
-                while (cp == gm.getCurrentPlayer() || !gm.isGameOver()) {
-                    if (!candidates.isEmpty()) {
-                        System.out.println("Selecting a winning candidate.");
-                        position = findRandomCandidate(candidates);
-                    } else {
-                        System.out.println("No winning candidate found. Making a random move.");
-                        position = makeRandomMove(gm.getBoard().size());
+
+            if (!gm.isGameOver()) {
+                System.out.println("Computer, make a move.");
+                //computer makes a move
+                if (LogicHelper.isMoveNodeFound(position, gm.getCurrentPlayer(), builder.getCurrentNode())) {
+                    System.out.println("Found move in my decision tree.");
+                    List<TreeNode> candidates = LogicHelper.findWinningCandidates(builder.getCurrentNode());
+                    cp = gm.getCurrentPlayer();
+                    while (cp == gm.getCurrentPlayer() || !gm.isGameOver()) {
+                        if (!candidates.isEmpty()) {
+                            System.out.println("Selecting a winning candidate.");
+                            position = findRandomCandidate(candidates);
+                        } else {
+                            System.out.println("No winning candidate found. Making a random move.");
+                            position = makeRandomMove(gm.getBoard().size());
+                        }
                     }
+                    gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
+                } else {
+                    System.out.println("I don't know this move. Building a new path in my decision tree.");
+                    builder.getCurrentNode().addChild(builder.buildNewNode(cp, position));
+                    position = makeRandomMove(gm.getBoard().size());
+                    gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
+                    builder.getCurrentNode().addChild(builder.buildNewNode(gm, position));
                 }
-                gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
-            } else {
-                System.out.println("I don't know this move. Building a new path in my decision tree.");
-                builder.getCurrentNode().addChild(builder.buildNewNode(cp, position));
-                position = makeRandomMove(gm.getBoard().size());
-                gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
-                builder.getCurrentNode().addChild(builder.buildNewNode(gm, position));
             }
 
         }
@@ -87,6 +90,7 @@ public class Main {
     private static int makeRandomMove(int boardSize) {
         return  random.nextInt(boardSize);
     }
+
 }
 
 
