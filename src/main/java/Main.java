@@ -13,7 +13,7 @@ public class Main {
     static DecisionTreeBuilder builder;
 
     public static void main(String[] args){
-        builder = new DecisionTreeBuilder(new DecisionTree(new TicTacToeNode()));
+        builder = new DecisionTreeBuilder(new ExampleDecisionTree(new TicTacToeNode()));
         Scanner scanner = new Scanner(System.in);
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;

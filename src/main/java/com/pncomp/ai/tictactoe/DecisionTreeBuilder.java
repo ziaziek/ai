@@ -47,7 +47,7 @@ public class DecisionTreeBuilder {
     @Subscribe
     public void handleWinningNode(GameOverEvent event){
         //add if this is actually needed
-        TicTacToeNode tn = (TicTacToeNode) buildNewNode(event.getWinningPlayer(), event.getState().getPosition());
+        TicTacToeNode tn = (TicTacToeNode) buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
         tn.setResult(true);
         currentNode.addChild(tn);
     }
@@ -60,15 +60,19 @@ public class DecisionTreeBuilder {
         BoardState state = event.getState();
         if (currentNode.isLeafNode()) {
             System.out.printf("This is a leaf node, so I need to add a new node");
-            currentNode.addChild(buildNewNode(state.getSymbol(), state.getPosition()));
+            TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
+            currentNode.addChild(node);
+            currentNode=(TicTacToeNode)node;
         } else if (nomatch(currentNode.getChildren(), state)) {
             System.out.println("Current node has children, but not like this. Adding a new child.");
             currentNode.addChild(potentialNode);
+            currentNode=(TicTacToeNode)potentialNode;
         }
     }
 
     @Subscribe
     public void handleNewGame(NewGameEvent event){
+        System.out.println("New game. Resetting.");
         this.currentNode= (TicTacToeNode) this.getDecisionTree().getRootNode();
     }
 

@@ -1,10 +1,22 @@
 package com.pncomp.ai.tictactoe;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class GameManager {
+
+    public String getEventBusName() {
+        return eventBusName;
+    }
+
+    public void setEventBusName(String eventBusName) {
+        this.eventBusName = eventBusName;
+    }
+
+    private String eventBusName=null;
 
     public List<Integer> getBoard() {
         List<Integer> r = new ArrayList<>();
@@ -85,11 +97,11 @@ public class GameManager {
     private void doGameOver(int symbol, int place) {
         gameOver=true;
         System.out.println("Game over.");
-        EventBusFactory.getEventBus().post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
+        EventBusFactory.getEventBus(eventBusName).post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
     }
 
     private void nextPlayer(int symbol, int place) {
-        EventBusFactory.getEventBus().post(new GameEvent(this, new BoardState(place, symbol), currentPlayer));
+        EventBusFactory.getEventBus(eventBusName).post(new GameEvent(this, new BoardState(place, symbol), currentPlayer));
         currentPlayer=(currentPlayer+1)%nPlayers;
     }
 
