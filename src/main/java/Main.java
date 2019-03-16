@@ -18,6 +18,7 @@ public class Main {
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;
         while(playOn){
+            EventBusFactory.getEventBus().post(new NewGameEvent());
             playGame(builder, scanner, new GameManager());
             System.out.println("Nowa gra? (Y/N)");
             playOn="y".equalsIgnoreCase(scanner.next());
@@ -63,10 +64,8 @@ public class Main {
                     gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
                 } else {
                     System.out.println("I don't know this move. Building a new path in my decision tree.");
-                    builder.getCurrentNode().addChild(builder.buildNewNode(cp, position));
                     position = makeRandomMove(gm.getBoard().size());
                     gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
-                    builder.getCurrentNode().addChild(builder.buildNewNode(gm, position));
                 }
             }
 

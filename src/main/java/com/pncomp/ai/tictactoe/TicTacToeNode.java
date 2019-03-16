@@ -25,7 +25,8 @@ public class TicTacToeNode extends TreeNode {
     }
 
     public boolean getResult(){
-        return (boolean) findAttribute(ATTR_RESULT);
+        Object attr = findAttribute(ATTR_RESULT);
+        return attr!=null && (boolean) attr;
     }
 
     public int[] getMove(){

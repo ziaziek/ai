@@ -3,6 +3,9 @@ package com.pncomp.ai.tictactoe;
 import com.google.common.eventbus.Subscribe;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public class DecisionTreeBuilder {
 
@@ -30,14 +33,14 @@ public class DecisionTreeBuilder {
     public TreeNode buildNewNode(GameManager gm, int position) {
 
         TicTacToeNode node = new TicTacToeNode();
-        node.setMove(position, gm.getCurrentPlayer());
+        node.setMove(position, gm.getCurrentPlayerSymbol());
         return node;
     }
 
-    public TreeNode buildNewNode(int playerNumber, int position) {
+    public TreeNode buildNewNode(int symbol, int position) {
 
         TicTacToeNode node = new TicTacToeNode();
-        node.setMove(position, playerNumber);
+        node.setMove(position, symbol);
         return node;
     }
 
@@ -57,18 +60,31 @@ public class DecisionTreeBuilder {
         BoardState state = event.getState();
         if (currentNode.isLeafNode()) {
             System.out.printf("This is a leaf node, so I need to add a new node");
-        } else if (currentNode.getChildren().stream().noneMatch(n -> {
-            if (n instanceof TicTacToeNode) {
-                TicTacToeNode t = (TicTacToeNode) n;
-                return t.getMove()[0] == state.getPosition() && t.getMove()[1] == state.getSymbol();
-            } else {
-                return false;
-            }
-        })) {
+            currentNode.addChild(buildNewNode(state.getSymbol(), state.getPosition()));
+        } else if (nomatch(currentNode.getChildren(), state)) {
             System.out.println("Current node has children, but not like this. Adding a new child.");
             currentNode.addChild(potentialNode);
         }
-        ;
+    }
+
+    @Subscribe
+    public void handleNewGame(NewGameEvent event){
+        this.currentNode= (TicTacToeNode) this.getDecisionTree().getRootNode();
+    }
+
+    protected boolean nomatch(@NotNull Set<TreeNode> children, final BoardState state) {
+        for(TreeNode tn : children){
+            if(tn instanceof TicTacToeNode){
+                TicTacToeNode tnn = (TicTacToeNode)tn;
+                int[] move = tnn.getMove();
+                if(move[0]==state.getPosition() && move[1]==state.getSymbol()){
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
