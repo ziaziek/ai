@@ -31,13 +31,15 @@ public class Main {
         while(!gm.isGameOver()){
             gm.printOutBoard();
             int position=-1;
+            int currentSymbol=0;
             //human makes a move
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
                 System.out.println("Make a move (enter coordinates): ");
                 int[] coords= getUserCoordinates(scanner);
                 try {
                     position=gm.convertCoordinates(coords[0], coords[1]);
-                    gm.placeSymbol(gm.getCurrentPlayerSymbol(), coords[0], coords[1]);
+                    currentSymbol=gm.getCurrentPlayerSymbol();
+                    gm.placeSymbol(currentSymbol, coords[0], coords[1]);
                     System.out.println("Current player:" + gm.getCurrentPlayer());
                 } catch (CoordinatesException e) {
                     e.printStackTrace();
@@ -48,9 +50,10 @@ public class Main {
             if (!gm.isGameOver()) {
                 System.out.println("Computer, make a move.");
                 //computer makes a move
-                if (LogicHelper.isMoveNodeFound(position, gm.getCurrentPlayer(), builder.getCurrentNode())) {
+                TreeNode playerMoveNode=LogicHelper.isMoveNodeFound(position, currentSymbol, builder.getCurrentNode());
+                if (playerMoveNode!=null) {
                     System.out.println("Found move in my decision tree.");
-                    List<TreeNode> candidates = LogicHelper.findWinningCandidates(builder.getCurrentNode());
+                    List<TreeNode> candidates = LogicHelper.findWinningCandidates((TicTacToeNode) playerMoveNode);
                     cp = gm.getCurrentPlayer();
                     while (cp == gm.getCurrentPlayer() || !gm.isGameOver()) {
                         if (!candidates.isEmpty()) {
@@ -60,8 +63,8 @@ public class Main {
                             System.out.println("No winning candidate found. Making a random move.");
                             position = makeRandomMove(gm.getBoard().size());
                         }
+                        gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
                     }
-                    gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
                 } else {
                     System.out.println("I don't know this move. Building a new path in my decision tree.");
                     position = makeRandomMove(gm.getBoard().size());

@@ -55,11 +55,11 @@ public class DecisionTreeBuilder {
     @Subscribe
     public void handleSymbolPlaced(GameEvent event){
         //check if the tree needs adding a new node
-        TreeNode potentialNode = buildNewNode(event.getPlayer(), event.getState().getPosition());
+        TreeNode potentialNode = buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
         System.out.println("Checking if a new tree node is required.");
         BoardState state = event.getState();
         if (currentNode.isLeafNode()) {
-            System.out.printf("This is a leaf node, so I need to add a new node");
+            System.out.println("This is a leaf node, so I need to add a new node");
             TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
             currentNode.addChild(node);
             currentNode=(TicTacToeNode)node;

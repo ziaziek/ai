@@ -5,12 +5,13 @@ import com.pncomp.ai.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LogicHelper {
 
-    public static boolean isMoveNodeFound(int position, int symbol, TicTacToeNode node){
-        return node.getChildren().stream().anyMatch(x-> (int)x.findAttribute(TicTacToeNode.ATTR_SYMBOL)==symbol
-        && (int)x.findAttribute(TicTacToeNode.ATTR_MOVE)==position);
+    public static TreeNode isMoveNodeFound(int position, int symbol, TicTacToeNode node){
+        return node.getChildren().stream().filter(x-> (int)x.findAttribute(TicTacToeNode.ATTR_SYMBOL)==symbol
+        && (int)x.findAttribute(TicTacToeNode.ATTR_MOVE)==position).collect(Collectors.toList()).get(0);
     }
 
     /**

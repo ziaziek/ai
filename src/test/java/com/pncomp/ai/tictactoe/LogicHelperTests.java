@@ -10,8 +10,8 @@ public class LogicHelperTests {
     private TicTacToeNode firstMove;
 
     @Test
-    public void isMoveNoneFoundTest(){
-        assertFalse(LogicHelper.isMoveNodeFound(0, GameManager.TIC, (TicTacToeNode) dt.getRootNode()));
+    public void isMoveNodeFoundTest(){
+        assertNull(LogicHelper.isMoveNodeFound(0, GameManager.TIC, (TicTacToeNode) dt.getRootNode()));
     }
 
     @Test
