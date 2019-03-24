@@ -1,7 +1,9 @@
 package com.pncomp.ai;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 
+@XmlRootElement
 public class TreeNode {
 
     public Map<String, Object> getAttributes() {
