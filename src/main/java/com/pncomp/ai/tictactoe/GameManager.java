@@ -65,7 +65,7 @@ public class GameManager {
         this.size=size;
     }
 
-    public void placeSymbol(int symbol, int place){
+    public boolean placeSymbol(int symbol, int place){
         if(canPlaceSymbol(place)){
             board[place]=symbol;
             if (!boardWillBeFull() && !isGameWon(symbol, place)) {
@@ -73,8 +73,10 @@ public class GameManager {
             } else {
                 doGameOver(symbol, place);
             }
+            return true;
         } else {
             System.out.println("Cannot place symmbol there. Try again.");
+            return false;
         }
     }
 
@@ -192,5 +194,11 @@ public class GameManager {
 
     public boolean isDraw() {
         return isGameOver() && boardWillBeFull() && winningPlayer == -1;
+    }
+
+    public void tryPlacingSymbol(final int player, final Retrier retrier) throws Exception {
+        while (player == getCurrentPlayer() && !isGameOver()) {
+            placeSymbol(getCurrentPlayerSymbol(), retrier.newPosition());
+        }
     }
 }

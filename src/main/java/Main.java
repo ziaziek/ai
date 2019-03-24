@@ -9,11 +9,10 @@ import java.util.Scanner;
 
 public class Main {
 
-    static Random random = new Random();
     static DecisionTreeBuilder builder;
 
-    public static void main(String[] args){
-        builder = new DecisionTreeBuilder(new ExampleDecisionTree(new TicTacToeNode()));
+    public static void main(String[] args) throws Exception {
+        builder = new DecisionTreeBuilder(new DecisionTree(new TicTacToeNode()));
         Scanner scanner = new Scanner(System.in);
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;
@@ -26,61 +25,41 @@ public class Main {
         System.out.printf("Thank you.");
     }
 
-    private static void playGame(DecisionTreeBuilder builder, Scanner scanner, GameManager gm) {
-        int cp = gm.getCurrentPlayer();
+    private static void playGame(DecisionTreeBuilder builder, Scanner scanner, GameManager gm) throws Exception {
+        RandomRetrier randomRetrier = new RandomRetrier(gm);
+        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm);
         while(!gm.isGameOver()){
+            int cp = gm.getCurrentPlayer();
             gm.printOutBoard();
-            int position=-1;
             int currentSymbol=0;
             //human makes a move
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
                 System.out.println("Make a move (enter coordinates): ");
                 int[] coords= getUserCoordinates(scanner);
-                try {
-                    position=gm.convertCoordinates(coords[0], coords[1]);
                     currentSymbol=gm.getCurrentPlayerSymbol();
                     gm.placeSymbol(currentSymbol, coords[0], coords[1]);
                     System.out.println("Current player:" + gm.getCurrentPlayer());
-                } catch (CoordinatesException e) {
-                    e.printStackTrace();
-                }
             }
 
 
             if (!gm.isGameOver()) {
                 System.out.println("Computer, make a move.");
                 //computer makes a move
-                TreeNode playerMoveNode=LogicHelper.isMoveNodeFound(position, currentSymbol, builder.getCurrentNode());
+                TreeNode playerMoveNode=builder.getCurrentNode();
+                Retrier currentRetrier;
                 if (playerMoveNode!=null) {
                     System.out.println("Found move in my decision tree.");
-                    List<TreeNode> candidates = LogicHelper.findWinningCandidates((TicTacToeNode) playerMoveNode);
-                    cp = gm.getCurrentPlayer();
-                    while (cp == gm.getCurrentPlayer() || !gm.isGameOver()) {
-                        if (!candidates.isEmpty()) {
-                            System.out.println("Selecting a winning candidate.");
-                            position = findRandomCandidate(candidates);
-                        } else {
-                            System.out.println("No winning candidate found. Making a random move.");
-                            position = makeRandomMove(gm.getBoard().size());
-                        }
-                        gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
-                    }
+                    randomWithCandidatesRetrier.setCandidates(LogicHelper.findWinningCandidates((TicTacToeNode) playerMoveNode));
+                    currentRetrier=randomWithCandidatesRetrier;
                 } else {
                     System.out.println("I don't know this move. Building a new path in my decision tree.");
-                    position = makeRandomMove(gm.getBoard().size());
-                    gm.placeSymbol(gm.getCurrentPlayerSymbol(), position);
+                    currentRetrier=randomRetrier;
                 }
+                gm.tryPlacingSymbol(gm.getCurrentPlayer(), currentRetrier);
             }
 
         }
-        //add the last position as a result node, if it doesn't exist yet
         gm.printOutBoard();
-    }
-
-    private static int findRandomCandidate(List<TreeNode> candidates) {
-
-        return ((TicTacToeNode)candidates.get(random.nextInt(candidates.size()))).getMove()[0];
-
     }
 
     private static int[] getUserCoordinates(Scanner scanner) {
@@ -89,9 +68,7 @@ public class Main {
         return new int[] {Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])};
     }
 
-    private static int makeRandomMove(int boardSize) {
-        return  random.nextInt(boardSize);
-    }
+
 
 }
 

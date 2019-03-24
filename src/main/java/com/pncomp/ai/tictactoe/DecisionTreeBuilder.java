@@ -5,6 +5,7 @@ import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class DecisionTreeBuilder {
@@ -63,10 +64,14 @@ public class DecisionTreeBuilder {
             TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
             currentNode.addChild(node);
             currentNode=(TicTacToeNode)node;
-        } else if (nomatch(currentNode.getChildren(), state)) {
-            System.out.println("Current node has children, but not like this. Adding a new child.");
-            currentNode.addChild(potentialNode);
-            currentNode=(TicTacToeNode)potentialNode;
+        } else {
+            Optional tnOptional = currentNode.getChildren().stream().filter(x -> x.isLike(potentialNode)).findAny();
+            if(tnOptional.isPresent()){
+                currentNode=(TicTacToeNode)tnOptional.get();
+            } else {
+                currentNode.addChild(potentialNode);
+                currentNode=(TicTacToeNode)potentialNode;
+            }
         }
     }
 
@@ -76,6 +81,9 @@ public class DecisionTreeBuilder {
         this.currentNode= (TicTacToeNode) this.getDecisionTree().getRootNode();
     }
 
+    /*
+        Return true if none of the children represents the given board state.
+     */
     protected boolean nomatch(@NotNull Set<TreeNode> children, final BoardState state) {
         for(TreeNode tn : children){
             if(tn instanceof TicTacToeNode){
@@ -90,5 +98,7 @@ public class DecisionTreeBuilder {
         }
         return true;
     }
+
+
 
 }

@@ -70,4 +70,21 @@ public class TreeNode {
         getAttributes().forEach((x,y)-> {sb.append(x); sb.append(": "); sb.append(y.toString()); sb.append("\n");});
         return sb.toString();
     }
+
+    public boolean isLike(Object obj) {
+        if(obj==null || ! (obj instanceof TreeNode)){
+            return false;
+        }
+        TreeNode tn = (TreeNode) obj;
+         return hasSameAttributes(tn);
+    }
+
+    private boolean hasSameAttributes(TreeNode tn){
+        for(String s: attributes.keySet()){
+            if(!attributes.get(s).equals(tn.findAttribute(s))){
+                return false;
+            }
+        }
+        return true;
+    }
 }
