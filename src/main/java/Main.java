@@ -3,8 +3,6 @@ import com.pncomp.ai.TreeNode;
 import com.pncomp.ai.tictactoe.*;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {

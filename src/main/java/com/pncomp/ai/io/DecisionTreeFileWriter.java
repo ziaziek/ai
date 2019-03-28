@@ -15,7 +15,7 @@ public class DecisionTreeFileWriter implements DecisionTreeWriter {
         try{
             JAXBContext context = JAXBContext.newInstance(decisionTree.getClass());
             Marshaller marshaller=context.createMarshaller();
-            marshaller.marshal(decisionTree, new File(Settings.DECISION_TREE_FILE_NAME));
+            marshaller.marshal(decisionTree.getRootNode(), new File(Settings.DECISION_TREE_FILE_NAME));
         } catch (JAXBException e) {
             e.printStackTrace();
         }

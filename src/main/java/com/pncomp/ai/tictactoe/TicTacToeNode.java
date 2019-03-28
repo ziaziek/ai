@@ -1,6 +1,9 @@
 package com.pncomp.ai.tictactoe;
 import com.pncomp.ai.TreeNode;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class TicTacToeNode extends TreeNode {
 
     public static final String ATTR_MOVE= "move";

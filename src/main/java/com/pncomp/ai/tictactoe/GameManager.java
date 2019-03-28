@@ -1,7 +1,5 @@
 package com.pncomp.ai.tictactoe;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

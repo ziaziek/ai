@@ -2,9 +2,11 @@ package com.pncomp.ai.io;
 
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.Settings;
+import com.pncomp.ai.TreeNode;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
 public class DecisionTreeFileReader implements DecisionTreeReader {
@@ -18,8 +20,10 @@ public class DecisionTreeFileReader implements DecisionTreeReader {
     @Override
     public DecisionTree read() {
         try {
-            JAXBContext context = JAXBContext.newInstance(T);
-            return (DecisionTree) context.createUnmarshaller().unmarshal(new File(Settings.DECISION_TREE_FILE_NAME));
+            JAXBContext context = JAXBContext.newInstance(DecisionTree.class);
+            Unmarshaller unmasrshaller = context.createUnmarshaller();
+            TreeNode root = (TreeNode) unmasrshaller.unmarshal(new File(Settings.DECISION_TREE_FILE_NAME));
+            return new DecisionTree(root);
         } catch (JAXBException e) {
             e.printStackTrace();
             return null;

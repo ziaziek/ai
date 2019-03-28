@@ -1,17 +1,25 @@
 package com.pncomp.ai;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.*;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-@XmlRootElement
+@XmlRootElement(name="node")
 public class TreeNode {
 
+    @XmlElement
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return attributes;
     }
 
+    @XmlElementRef
     public Set<TreeNode> getChildren() {
-        return Collections.unmodifiableSet(children);
+        return children;
     }
 
     public void setChildren(Set<TreeNode> children) {
@@ -22,6 +30,7 @@ public class TreeNode {
 
     protected Set<TreeNode> children = new HashSet<>();
 
+    @XmlTransient
     public TreeNode getParent() {
         return parent;
     }
@@ -30,6 +39,7 @@ public class TreeNode {
             this.parent=parent;
     }
 
+    @XmlTransient
     private TreeNode parent;
 
     /**

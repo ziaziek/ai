@@ -3,6 +3,9 @@ package com.pncomp.ai.tictactoe;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class ExampleDecisionTree extends DecisionTree {
 
     public ExampleDecisionTree(){
