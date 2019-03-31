@@ -1,6 +1,9 @@
-package com.pncomp.ai.tictactoe;
+package com.pncomp.ai.tictactoe.retriers;
 
 import com.pncomp.ai.TreeNode;
+import com.pncomp.ai.tictactoe.GameManager;
+import com.pncomp.ai.tictactoe.TicTacToeNode;
+import com.pncomp.ai.tictactoe.retriers.RandomRetrier;
 
 import java.util.List;
 

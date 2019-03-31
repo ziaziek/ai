@@ -2,8 +2,9 @@ package com.pncomp.ai.tictactoe;
 import com.pncomp.ai.TreeNode;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement
+@XmlRootElement(name="tictactoenode")
 public class TicTacToeNode extends TreeNode {
 
     public static final String ATTR_MOVE= "move";
@@ -27,6 +28,7 @@ public class TicTacToeNode extends TreeNode {
         setAttribute(ATTR_RESULT, win);
     }
 
+    @XmlTransient
     public boolean getResult(){
         Object attr = findAttribute(ATTR_RESULT);
         return attr!=null && (boolean) attr;

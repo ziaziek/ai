@@ -1,4 +1,6 @@
-package com.pncomp.ai.tictactoe;
+package com.pncomp.ai.tictactoe.events;
+
+import com.pncomp.ai.tictactoe.BoardState;
 
 public class GameEvent {
 

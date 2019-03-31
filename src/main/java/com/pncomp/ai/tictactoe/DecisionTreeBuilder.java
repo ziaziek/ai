@@ -3,6 +3,9 @@ package com.pncomp.ai.tictactoe;
 import com.google.common.eventbus.Subscribe;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
+import com.pncomp.ai.tictactoe.events.GameEvent;
+import com.pncomp.ai.tictactoe.events.GameOverEvent;
+import com.pncomp.ai.tictactoe.events.NewGameEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -56,21 +59,23 @@ public class DecisionTreeBuilder {
     @Subscribe
     public void handleSymbolPlaced(GameEvent event){
         //check if the tree needs adding a new node
-        TreeNode potentialNode = buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
-        System.out.println("Checking if a new tree node is required.");
-        BoardState state = event.getState();
-        if (currentNode.isLeafNode()) {
-            System.out.println("This is a leaf node, so I need to add a new node");
-            TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
-            currentNode.addChild(node);
-            currentNode=(TicTacToeNode)node;
-        } else {
-            Optional tnOptional = currentNode.getChildren().stream().filter(x -> x.isLike(potentialNode)).findAny();
-            if(tnOptional.isPresent()){
-                currentNode=(TicTacToeNode)tnOptional.get();
+        if(!(event instanceof GameOverEvent)){
+            TreeNode potentialNode = buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
+            System.out.println("Checking if a new tree node is required.");
+            BoardState state = event.getState();
+            if (currentNode.isLeafNode()) {
+                System.out.println("This is a leaf node, so I need to add a new node");
+                TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
+                currentNode.addChild(node);
+                currentNode=(TicTacToeNode)node;
             } else {
-                currentNode.addChild(potentialNode);
-                currentNode=(TicTacToeNode)potentialNode;
+                Optional tnOptional = currentNode.getChildren().stream().filter(x -> x.isLike(potentialNode)).findAny();
+                if(tnOptional.isPresent()){
+                    currentNode=(TicTacToeNode)tnOptional.get();
+                } else {
+                    currentNode.addChild(potentialNode);
+                    currentNode=(TicTacToeNode)potentialNode;
+                }
             }
         }
     }

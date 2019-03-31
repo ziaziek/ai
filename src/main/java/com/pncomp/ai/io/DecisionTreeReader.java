@@ -1,8 +1,8 @@
 package com.pncomp.ai.io;
 
-import com.pncomp.ai.DecisionTree;
+import com.pncomp.ai.TreeNode;
 
-public interface DecisionTreeReader {
+public interface DecisionTreeReader<E extends TreeNode> {
 
-    DecisionTree read();
+    E read();
 }
