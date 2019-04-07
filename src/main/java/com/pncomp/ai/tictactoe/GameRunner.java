@@ -9,20 +9,19 @@ import com.pncomp.ai.tictactoe.retriers.RandomWithCandidatesRetrier;
 import com.pncomp.ai.tictactoe.retriers.Retrier;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class GameRunner {
 
     private DecisionTreeBuilder builder;
 
-    private final Scanner scanner;
+    private final PlayerInput playerInput;
 
-    public GameRunner(Scanner scanner) {
+    public GameRunner(PlayerInput scanner) {
         this(scanner, null);
     }
 
-    public GameRunner(final Scanner scanner, final DecisionTreeBuilder decisionTreeBuilder){
-        this.scanner = scanner;
+    public GameRunner(final PlayerInput scanner, final DecisionTreeBuilder decisionTreeBuilder){
+        this.playerInput = scanner;
         if (decisionTreeBuilder==null){
             builder = buildDecisionTreeBuilder();
         } else {
@@ -35,9 +34,9 @@ public class GameRunner {
         boolean playOn=true;
         while(playOn){
             EventBusFactory.getEventBus().post(new NewGameEvent());
-            playGame(builder, scanner, new GameManager());
+            playGame(builder, playerInput, new GameManager());
             System.out.println("Nowa gra? (Y/N)");
-            playOn="y".equalsIgnoreCase(scanner.next());
+            playOn="y".equalsIgnoreCase(playerInput.readInput());
         }
         System.out.printf("Thank you.");
     }
@@ -46,7 +45,7 @@ public class GameRunner {
         return new DecisionTreeBuilder(new DecisionTree(new TicTacToeNode()));
     }
 
-    private void playGame(DecisionTreeBuilder builder, Scanner scanner, GameManager gm) throws Exception {
+    private void playGame(DecisionTreeBuilder builder, PlayerInput playerInput, GameManager gm) throws Exception {
         RandomRetrier randomRetrier = new RandomRetrier(gm);
         RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm);
         while(!gm.isGameOver()){
@@ -54,7 +53,7 @@ public class GameRunner {
             gm.printOutBoard();
 
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
-                playerMakesMove(scanner, gm);
+                playerMakesMove(playerInput.readInput(), gm);
             }
 
             if (!gm.isGameOver()) {
@@ -80,17 +79,17 @@ public class GameRunner {
         gm.tryPlacingSymbol(gm.getCurrentPlayer(), currentRetrier);
     }
 
-    private void playerMakesMove(Scanner scanner, GameManager gm) {
+    private void playerMakesMove(final String coordinates, GameManager gm) {
         int currentSymbol;
         System.out.println("Make a move (enter coordinates): ");
-        int[] coords= getUserCoordinates(scanner);
+        int[] coords= getUserCoordinates(coordinates);
         currentSymbol=gm.getCurrentPlayerSymbol();
         gm.placeSymbol(currentSymbol, coords[0], coords[1]);
         System.out.println("Current player:" + gm.getCurrentPlayer());
     }
 
-    private int[] getUserCoordinates(Scanner scanner) {
-        String[] coordinates = scanner.next().split(",");
+    private int[] getUserCoordinates(final String coords) {
+        String[] coordinates = coords.split(",");
         Arrays.stream(coordinates).forEach(System.out::println);
         return new int[] {Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])};
     }
