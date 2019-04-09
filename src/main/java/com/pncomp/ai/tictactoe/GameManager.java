@@ -127,11 +127,7 @@ public class GameManager {
     }
 
     public int convertCoordinates(int x, int y) throws CoordinatesException {
-        if(x<size && y<size){
-            return x + y* size;
-        } else {
-            throw new CoordinatesException();
-        }
+        return CoordinatesConverter.convertCoordinates(x, y, size);
     }
 
 

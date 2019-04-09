@@ -13,6 +13,7 @@ public class RandomRetrier implements Retrier {
     public RandomRetrier(GameManager gm){
         this.gm=gm;
     }
+
     @Override
     public int newPosition() throws Exception {
         return makeRandomMove(gm.getBoard().size());
