@@ -46,8 +46,8 @@ public class GameRunner {
     }
 
     private void playGame(DecisionTreeBuilder builder, PlayerInput playerInput, GameManager gm) throws Exception {
-        RandomRetrier randomRetrier = new RandomRetrier(gm);
-        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm);
+        RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size());
+        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
         while(!gm.isGameOver()){
             int cp = gm.getCurrentPlayer();
             gm.printOutBoard();
