@@ -11,6 +11,8 @@ import java.util.List;
 
 public class GameManager {
 
+    public static final int DEFAULT_BOARD_SIZE=3;
+
     public String getEventBusName() {
         return eventBusName;
     }
@@ -56,11 +58,11 @@ public class GameManager {
     }
 
     private int winningPlayer = -1;
-    private int size=3;
+    private int size=DEFAULT_BOARD_SIZE;
     private int nPlayers=2;
 
     public GameManager(){
-        board = new int[9];
+        board = new int[size * size];
     }
 
     public GameManager(final int size){

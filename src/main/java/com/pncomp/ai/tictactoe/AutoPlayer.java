@@ -7,13 +7,11 @@ import com.pncomp.ai.tictactoe.retriers.Retrier;
 public class AutoPlayer implements PlayerInput{
 
     private final Retrier retrier;
-    private final GameManager gameManager;
     private final int boardSize;
 
-    public AutoPlayer(final GameManager gameManager) {
-        this.retrier = new RandomRetrier(gameManager);
-        this.gameManager=gameManager;
-        boardSize = (int) Math.sqrt(gameManager.getBoard().size());
+    public AutoPlayer(final int boardSize) {
+        this.retrier = new RandomRetrier(boardSize * boardSize);
+        this.boardSize=boardSize;
     }
 
     @Override

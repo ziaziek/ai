@@ -1,9 +1,7 @@
 package com.pncomp.ai.tictactoe.retriers;
 
 import com.pncomp.ai.TreeNode;
-import com.pncomp.ai.tictactoe.GameManager;
 import com.pncomp.ai.tictactoe.TicTacToeNode;
-import com.pncomp.ai.tictactoe.retriers.RandomRetrier;
 
 import java.util.List;
 
@@ -19,8 +17,8 @@ public class RandomWithCandidatesRetrier extends RandomRetrier {
 
     private List<TreeNode> candidates;
 
-    public RandomWithCandidatesRetrier(final GameManager gm){
-        super(gm);
+    public RandomWithCandidatesRetrier(final int boardLength){
+        super(boardLength);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class RandomWithCandidatesRetrier extends RandomRetrier {
             position = findRandomCandidate(candidates);
         } else {
             System.out.println("No winning candidate found. Making a random move.");
-            position = makeRandomMove(gm.getBoard().size());
+            position = makeRandomMove(boardLength);
         }
         return position;
     }

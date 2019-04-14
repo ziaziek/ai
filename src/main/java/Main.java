@@ -1,17 +1,14 @@
 
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.io.DecisionTreeFileReader;
-import com.pncomp.ai.tictactoe.DecisionTreeBuilder;
-import com.pncomp.ai.tictactoe.GameRunner;
-import com.pncomp.ai.tictactoe.PlayerInput;
-import com.pncomp.ai.tictactoe.TicTacToeNode;
+import com.pncomp.ai.tictactoe.*;
 
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        new GameRunner(new SystemInPlayer(),
+        new GameRunner(new AutoPlayer(GameManager.DEFAULT_BOARD_SIZE),
                 new DecisionTreeBuilder(
                         new DecisionTree(new DecisionTreeFileReader<TicTacToeNode>().read()))).run();
     }

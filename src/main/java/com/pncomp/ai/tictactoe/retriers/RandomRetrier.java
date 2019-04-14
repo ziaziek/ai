@@ -8,15 +8,15 @@ public class RandomRetrier implements Retrier {
 
     protected Random random = new Random();
 
-    protected final GameManager gm;
+    protected final int boardLength;
 
-    public RandomRetrier(GameManager gm){
-        this.gm=gm;
+    public RandomRetrier(int boardLength){
+        this.boardLength=boardLength;
     }
 
     @Override
     public int newPosition() throws Exception {
-        return makeRandomMove(gm.getBoard().size());
+        return makeRandomMove(boardLength);
     }
 
     protected int makeRandomMove(int boardSize) {
