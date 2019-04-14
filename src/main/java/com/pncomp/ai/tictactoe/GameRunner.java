@@ -15,13 +15,15 @@ public class GameRunner {
     private DecisionTreeBuilder builder;
 
     private final PlayerInput playerInput;
+    private final LearnSettings learnSettings;
 
-    public GameRunner(PlayerInput scanner) {
-        this(scanner, null);
+    public GameRunner(PlayerInput scanner, LearnSettings learnSettings) {
+        this(scanner, null, learnSettings);
     }
 
-    public GameRunner(final PlayerInput scanner, final DecisionTreeBuilder decisionTreeBuilder){
+    public GameRunner(final PlayerInput scanner, final DecisionTreeBuilder decisionTreeBuilder, final LearnSettings learnSettings){
         this.playerInput = scanner;
+        this.learnSettings=learnSettings;
         if (decisionTreeBuilder==null){
             builder = buildDecisionTreeBuilder();
         } else {
@@ -36,9 +38,17 @@ public class GameRunner {
             EventBusFactory.getEventBus().post(new NewGameEvent());
             playGame(builder, playerInput, new GameManager());
             System.out.println("Nowa gra? (Y/N)");
-            playOn="y".equalsIgnoreCase(playerInput.readInput());
+            playOn="y".equalsIgnoreCase(readInput(builder, learnSettings, true));
         }
         System.out.printf("Thank you.");
+    }
+
+    private String readInput(DecisionTreeBuilder builder, LearnSettings learnSettings, final boolean playOnDecision) {
+        if(!playOnDecision){
+            return playerInput.readInput();
+        } else{
+            return ""; //TODO: Implement the mechanism of continuing game mased on learnSettings.
+        }
     }
 
     private DecisionTreeBuilder buildDecisionTreeBuilder(){
@@ -53,7 +63,7 @@ public class GameRunner {
             gm.printOutBoard();
 
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
-                playerMakesMove(playerInput.readInput(), gm);
+                playerMakesMove(readInput(builder, learnSettings, false), gm);
             }
 
             if (!gm.isGameOver()) {

@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         new GameRunner(new AutoPlayer(GameManager.DEFAULT_BOARD_SIZE),
                 new DecisionTreeBuilder(
-                        new DecisionTree(new DecisionTreeFileReader<TicTacToeNode>().read()))).run();
+                        new DecisionTree(new DecisionTreeFileReader<TicTacToeNode>().read())), null).run();
     }
 
     static class SystemInPlayer implements PlayerInput{
