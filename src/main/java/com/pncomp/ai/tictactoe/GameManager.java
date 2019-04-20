@@ -23,6 +23,12 @@ public class GameManager {
 
     private String eventBusName=null;
 
+    public long getMaxDecisionTreeNodes() {
+        return maxDecisionTreeNodes;
+    }
+
+    private final long maxDecisionTreeNodes;
+
     public List<Integer> getBoard() {
         List<Integer> r = new ArrayList<>();
         for(int p: board){
@@ -62,12 +68,17 @@ public class GameManager {
     private int nPlayers=2;
 
     public GameManager(){
-        board = new int[size * size];
+        this(DEFAULT_BOARD_SIZE);
     }
 
     public GameManager(final int size){
-        board = new int[size*size];
+        initBoard(size);
         this.size=size;
+        this.maxDecisionTreeNodes=countMaxAllAvailableNodes(size);
+    }
+
+    private void initBoard(int size){
+        board = new int[size*size];
     }
 
     public boolean placeSymbol(int symbol, int place){
@@ -201,5 +212,14 @@ public class GameManager {
         while (player == getCurrentPlayer() && !isGameOver()) {
             placeSymbol(getCurrentPlayerSymbol(), retrier.newPosition());
         }
+    }
+
+    private long countMaxAllAvailableNodes(int boardSize){
+        //3 ^ 0 + 3 ^ 1 + 3^2 + 3 ^ 3 + ... 3 ^ n, n = boardSize/2
+        int p =  1;
+        for(int i = 1; i<boardSize*boardSize/2; i++){
+            p+=Math.pow(boardSize, i);
+        }
+        return p;
     }
 }

@@ -36,18 +36,27 @@ public class GameRunner {
         boolean playOn=true;
         while(playOn){
             EventBusFactory.getEventBus().post(new NewGameEvent());
-            playGame(builder, playerInput, new GameManager());
+            GameManager manager = new GameManager();
+            playGame(builder,  manager);
             System.out.println("Nowa gra? (Y/N)");
-            playOn="y".equalsIgnoreCase(readInput(builder, learnSettings, true));
+            playOn="y".equalsIgnoreCase(readInput(manager, learnSettings, true));
         }
         System.out.printf("Thank you.");
     }
 
-    private String readInput(DecisionTreeBuilder builder, LearnSettings learnSettings, final boolean playOnDecision) {
+    private String readInput(GameManager manager, LearnSettings learnSettings, final boolean playOnDecision) {
         if(!playOnDecision){
             return playerInput.readInput();
         } else{
-            return ""; //TODO: Implement the mechanism of continuing game mased on learnSettings.
+            if(manager!=null && learnSettings!=null){
+                //decide if the another game should be played
+                if((double)(builder.getDecisionTree().countAllNodes(builder.getDecisionTree().getRootNode()))/(double)(manager.getMaxDecisionTreeNodes())<=learnSettings.getPercentageOfNodes()/100){
+                    return "y";
+                } else {
+                    return "n";
+                }
+            }
+            return "y";
         }
     }
 
@@ -55,7 +64,7 @@ public class GameRunner {
         return new DecisionTreeBuilder(new DecisionTree(new TicTacToeNode()));
     }
 
-    private void playGame(DecisionTreeBuilder builder, PlayerInput playerInput, GameManager gm) throws Exception {
+    private void playGame(DecisionTreeBuilder builder, GameManager gm) throws Exception {
         RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size());
         RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
         while(!gm.isGameOver()){
@@ -63,7 +72,7 @@ public class GameRunner {
             gm.printOutBoard();
 
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
-                playerMakesMove(readInput(builder, learnSettings, false), gm);
+                playerMakesMove(readInput(null, learnSettings, false), gm);
             }
 
             if (!gm.isGameOver()) {
