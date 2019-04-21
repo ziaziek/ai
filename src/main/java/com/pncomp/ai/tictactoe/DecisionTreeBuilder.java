@@ -2,6 +2,7 @@ package com.pncomp.ai.tictactoe;
 
 import com.google.common.eventbus.Subscribe;
 import com.pncomp.ai.DecisionTree;
+import com.pncomp.ai.Settings;
 import com.pncomp.ai.TreeNode;
 import com.pncomp.ai.tictactoe.events.GameEvent;
 import com.pncomp.ai.tictactoe.events.GameOverEvent;
@@ -26,6 +27,12 @@ public class DecisionTreeBuilder {
     public DecisionTree getDecisionTree() {
         return decisionTree;
     }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    private Settings settings;
 
     private final DecisionTree decisionTree;
 
@@ -61,10 +68,14 @@ public class DecisionTreeBuilder {
         //check if the tree needs adding a new node
         if(!(event instanceof GameOverEvent)){
             TreeNode potentialNode = buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
-            System.out.println("Checking if a new tree node is required.");
+            if(settings.isVerbose()){
+                System.out.println("Checking if a new tree node is required.");
+            }
             BoardState state = event.getState();
             if (currentNode.isLeafNode()) {
-                System.out.println("This is a leaf node, so I need to add a new node");
+                if(settings.isVerbose()){
+                    System.out.println("This is a leaf node, so I need to add a new node");
+                }
                 TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
                 currentNode.addChild(node);
                 currentNode=(TicTacToeNode)node;

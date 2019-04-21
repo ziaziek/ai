@@ -91,7 +91,7 @@ public class GameManager {
             }
             return true;
         } else {
-            System.out.println("Cannot place symmbol there. Try again.");
+            //System.out.println("Cannot place symmbol there. Try again.");
             return false;
         }
     }
@@ -215,11 +215,7 @@ public class GameManager {
     }
 
     private long countMaxAllAvailableNodes(int boardSize){
-        //3 ^ 0 + 3 ^ 1 + 3^2 + 3 ^ 3 + ... 3 ^ n, n = boardSize/2
-        int p =  1;
-        for(int i = 1; i<boardSize*boardSize/2; i++){
-            p+=Math.pow(boardSize, i);
-        }
-        return p;
+        //for 3 it's above 900 000
+        return 900000;
     }
 }

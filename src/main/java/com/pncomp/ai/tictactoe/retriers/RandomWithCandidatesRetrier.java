@@ -28,10 +28,14 @@ public class RandomWithCandidatesRetrier extends RandomRetrier {
         }
         int position;
         if (!candidates.isEmpty()) {
-            System.out.println("Selecting a winning candidate.");
+            if(settings.isVerbose()){
+                System.out.println("Selecting a winning candidate.");
+            }
             position = findRandomCandidate(candidates);
         } else {
-            System.out.println("No winning candidate found. Making a random move.");
+            if(settings.isVerbose()){
+                System.out.println("No winning candidate found. Making a random move.");
+            }
             position = makeRandomMove(boardLength);
         }
         return position;
