@@ -3,12 +3,16 @@ package com.pncomp.ai.tictactoe;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.Settings;
 import com.pncomp.ai.TreeNode;
+import com.pncomp.ai.io.DecisionTreeFileWriter;
+import com.pncomp.ai.io.DecisionTreeWriter;
 import com.pncomp.ai.tictactoe.events.EventBusFactory;
 import com.pncomp.ai.tictactoe.events.NewGameEvent;
 import com.pncomp.ai.tictactoe.retriers.RandomRetrier;
 import com.pncomp.ai.tictactoe.retriers.RandomWithCandidatesRetrier;
 import com.pncomp.ai.tictactoe.retriers.Retrier;
 
+import javax.xml.bind.JAXBException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class GameRunner {
@@ -18,7 +22,9 @@ public class GameRunner {
     private final PlayerInput playerInput;
     private final LearnSettings learnSettings;
     private final Settings settings;
+    private DecisionTreeWriter decisionTreeWriter= new DecisionTreeFileWriter();
     private int gamesPlayed=0;
+    private long startTime;
 
     public GameRunner(PlayerInput scanner, LearnSettings learnSettings, Settings settings) {
         this(scanner, null, learnSettings, settings);
@@ -37,6 +43,7 @@ public class GameRunner {
     }
 
     public void run() throws Exception {
+        startTime = System.currentTimeMillis();
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;
         while(playOn){
@@ -50,6 +57,13 @@ public class GameRunner {
     }
 
     private String readInput(GameManager manager, LearnSettings learnSettings, final boolean playOnDecision) {
+        if(settings.isLearnSelf() && gamesPlayed%10000==0){
+            try {
+                decisionTreeWriter.save(builder.getDecisionTree().getRootNode());
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+        }
         if(!playOnDecision){
             return playerInput.readInput();
         } else{
@@ -58,7 +72,7 @@ public class GameRunner {
                 gamesPlayed++;
                 double p = (double)(builder.getDecisionTree().countAllNodes(builder.getDecisionTree().getRootNode()))/(double)(manager.getMaxDecisionTreeNodes());
                 System.out.println("Current percentage: "+ p+", number of all nodes:" + manager.getMaxDecisionTreeNodes());
-                if(p<=learnSettings.getPercentageOfNodes()/100){
+                if(p<=learnSettings.getPercentageOfNodes()/100 && (learnSettings.getSecondsToFinish()==0 || (System.currentTimeMillis()-startTime)<learnSettings.getSecondsToFinish()*1000)){
                     return "y";
                 } else {
                     return "n";
