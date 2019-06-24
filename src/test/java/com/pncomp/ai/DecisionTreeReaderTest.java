@@ -2,6 +2,7 @@ package com.pncomp.ai;
 
 import com.google.common.collect.Lists;
 import com.pncomp.ai.io.DecisionTreeFileReader;
+import com.pncomp.ai.tictactoe.TicTacToeNode;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,11 +12,11 @@ import static org.junit.Assert.assertTrue;
 
 public class DecisionTreeReaderTest {
 
-    private final DecisionTreeFileReader treeFileReader = new DecisionTreeFileReader(DecisionTree.class);
+    private final DecisionTreeFileReader<TicTacToeNode> treeFileReader = new DecisionTreeFileReader();
 
     @Test
     public void readTree(){
-        DecisionTree tree = treeFileReader.read();
+        DecisionTree<TicTacToeNode> tree = new DecisionTree(treeFileReader.read());
         assertNotNull(tree);
         assertNotNull(tree.getRootNode());
         assertTrue(tree.getRootNode().getChildren().size()==1);
