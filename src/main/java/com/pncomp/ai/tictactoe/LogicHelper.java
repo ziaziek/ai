@@ -35,6 +35,17 @@ public class LogicHelper {
         return candidates;
     }
 
+    public static List<Integer> getFreePlaces(final List<Integer> board){
+
+        List<Integer> r = new ArrayList<>();
+        for(int i=0; i< board.size(); i++){
+            if(board.get(i)==null || board.get(i)==0){
+                r.add(i);
+            }
+        }
+        return r;
+    }
+
     private static boolean hasWinningLeaf(TicTacToeNode n, int symbol) {
 
         return new DecisionTree<>(n).findAllLeaves().stream().anyMatch(x -> symbol == x.getMove()[1]

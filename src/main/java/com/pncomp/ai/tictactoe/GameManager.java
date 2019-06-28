@@ -115,11 +115,11 @@ public class GameManager {
     private void doGameOver(int symbol, int place) {
         gameOver=true;
         System.out.println("Game over.");
-        EventBusFactory.getEventBus(eventBusName).post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
+        EventBusFactory.getEventBus(eventBusName).post(new GameOverEvent(this, new BoardState(place, symbol, getBoard()), currentPlayer));
     }
 
     private void nextPlayer(int symbol, int place) {
-        EventBusFactory.getEventBus(eventBusName).post(new GameEvent(this, new BoardState(place, symbol), currentPlayer));
+        EventBusFactory.getEventBus(eventBusName).post(new GameEvent(this, new BoardState(place, symbol, getBoard()), currentPlayer));
         currentPlayer=(currentPlayer+1)%nPlayers;
     }
 

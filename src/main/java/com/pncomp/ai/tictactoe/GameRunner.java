@@ -47,7 +47,7 @@ public class GameRunner {
         EventBusFactory.getEventBus().register(builder);
         boolean playOn=true;
         while(playOn){
-            EventBusFactory.getEventBus().post(new NewGameEvent());
+            EventBusFactory.getEventBus().post(new NewGameEvent(GameManager.DEFAULT_BOARD_SIZE));
             GameManager manager = new GameManager();
             playGame(builder,  manager);
             System.out.println("Nowa gra? (Y/N)");
@@ -87,8 +87,8 @@ public class GameRunner {
     }
 
     private void playGame(DecisionTreeBuilder builder, GameManager gm) throws Exception {
-        RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size());
-        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
+        RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size(), LogicHelper.getFreePlaces(gm.getBoard()));
+        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size(), LogicHelper.getFreePlaces(gm.getBoard()));
         randomRetrier.setSettings(settings);
         randomWithCandidatesRetrier.setSettings(settings);
         while(!gm.isGameOver()){
@@ -129,6 +129,7 @@ public class GameRunner {
             }
             currentRetrier=randomRetrier;
         }
+        EventBusFactory.getEventBus(gm.getEventBusName()).register(currentRetrier);
         gm.tryPlacingSymbol(gm.getCurrentPlayer(), currentRetrier);
     }
 
