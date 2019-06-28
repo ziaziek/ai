@@ -1,4 +1,4 @@
-package com.pncomp.ai.tictactoe;
+package com.pncomp.ai.tictactoe.events;
 
 import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;

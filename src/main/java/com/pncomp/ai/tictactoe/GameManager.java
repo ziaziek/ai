@@ -1,10 +1,17 @@
 package com.pncomp.ai.tictactoe;
 
+import com.pncomp.ai.tictactoe.events.EventBusFactory;
+import com.pncomp.ai.tictactoe.events.GameEvent;
+import com.pncomp.ai.tictactoe.events.GameOverEvent;
+import com.pncomp.ai.tictactoe.retriers.Retrier;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class GameManager {
+
+    public static final int DEFAULT_BOARD_SIZE=3;
 
     public String getEventBusName() {
         return eventBusName;
@@ -15,6 +22,12 @@ public class GameManager {
     }
 
     private String eventBusName=null;
+
+    public long getMaxDecisionTreeNodes() {
+        return maxDecisionTreeNodes;
+    }
+
+    private final long maxDecisionTreeNodes;
 
     public List<Integer> getBoard() {
         List<Integer> r = new ArrayList<>();
@@ -51,16 +64,21 @@ public class GameManager {
     }
 
     private int winningPlayer = -1;
-    private int size=3;
+    private int size=DEFAULT_BOARD_SIZE;
     private int nPlayers=2;
 
     public GameManager(){
-        board = new int[9];
+        this(DEFAULT_BOARD_SIZE);
     }
 
     public GameManager(final int size){
-        board = new int[size*size];
+        initBoard(size);
         this.size=size;
+        this.maxDecisionTreeNodes=countMaxAllAvailableNodes(size);
+    }
+
+    private void initBoard(int size){
+        board = new int[size*size];
     }
 
     public boolean placeSymbol(int symbol, int place){
@@ -73,7 +91,7 @@ public class GameManager {
             }
             return true;
         } else {
-            System.out.println("Cannot place symmbol there. Try again.");
+            //System.out.println("Cannot place symmbol there. Try again.");
             return false;
         }
     }
@@ -122,11 +140,7 @@ public class GameManager {
     }
 
     public int convertCoordinates(int x, int y) throws CoordinatesException {
-        if(x<size && y<size){
-            return x + y* size;
-        } else {
-            throw new CoordinatesException();
-        }
+        return CoordinatesConverter.convertCoordinates(x, y, size);
     }
 
 
@@ -198,5 +212,10 @@ public class GameManager {
         while (player == getCurrentPlayer() && !isGameOver()) {
             placeSymbol(getCurrentPlayerSymbol(), retrier.newPosition());
         }
+    }
+
+    private long countMaxAllAvailableNodes(int boardSize){
+        //for 3 it's above 900 000
+        return 900000;
     }
 }

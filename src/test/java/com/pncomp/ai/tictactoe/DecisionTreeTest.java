@@ -2,6 +2,7 @@ package com.pncomp.ai.tictactoe;
 
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
+import com.pncomp.ai.tictactoe.events.GameEvent;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Set;
