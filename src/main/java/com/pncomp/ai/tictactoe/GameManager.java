@@ -86,6 +86,7 @@ public class GameManager {
             board[place]=symbol;
             if (!boardWillBeFull() && !isGameWon(symbol, place)) {
                 nextPlayer(symbol, place);
+                LogicHelper.getFreePlaces().remove(LogicHelper.getFreePlaces().indexOf(place));
             } else {
                 doGameOver(symbol, place);
             }

@@ -1,14 +1,9 @@
 package com.pncomp.ai.tictactoe;
 
 
-import com.google.common.eventbus.Subscribe;
-import com.pncomp.ai.tictactoe.events.EventBusFactory;
-import com.pncomp.ai.tictactoe.events.GameEvent;
 import com.pncomp.ai.tictactoe.retriers.RandomRetrier;
 import com.pncomp.ai.tictactoe.retriers.Retrier;
 
-import java.util.Collections;
-import java.util.List;
 
 public class AutoPlayer implements PlayerInput{
 
@@ -20,8 +15,7 @@ public class AutoPlayer implements PlayerInput{
     private final int boardSize;
 
     public AutoPlayer(final int boardSize) {
-        this.retrier = new RandomRetrier(boardSize * boardSize, Collections.emptyList());
-        EventBusFactory.getEventBus().register(retrier);
+        this.retrier = new RandomRetrier(boardSize * boardSize);
         this.boardSize=boardSize;
     }
 

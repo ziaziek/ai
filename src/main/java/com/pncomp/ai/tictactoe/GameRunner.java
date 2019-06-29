@@ -87,10 +87,11 @@ public class GameRunner {
     }
 
     private void playGame(DecisionTreeBuilder builder, GameManager gm) throws Exception {
-        RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size(), LogicHelper.getFreePlaces(gm.getBoard()));
-        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size(), LogicHelper.getFreePlaces(gm.getBoard()));
+        RandomRetrier randomRetrier = new RandomRetrier(gm.getBoard().size());
+        RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
         randomRetrier.setSettings(settings);
         randomWithCandidatesRetrier.setSettings(settings);
+        LogicHelper.initFreePlaces(gm.getBoard());
         while(!gm.isGameOver()){
             int cp = gm.getCurrentPlayer();
             if(!settings.isLearnSelf()){
@@ -129,7 +130,6 @@ public class GameRunner {
             }
             currentRetrier=randomRetrier;
         }
-        EventBusFactory.getEventBus(gm.getEventBusName()).register(currentRetrier);
         gm.tryPlacingSymbol(gm.getCurrentPlayer(), currentRetrier);
     }
 

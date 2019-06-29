@@ -9,6 +9,12 @@ import java.util.stream.Collectors;
 
 public class LogicHelper {
 
+    public static List<Integer> getFreePlaces() {
+        return freePlaces;
+    }
+
+    private static List<Integer> freePlaces = new ArrayList<>();
+
     public static TreeNode isMoveNodeFound(int position, int symbol, TicTacToeNode node){
         List<TreeNode> foundMovesList = node.getChildren().stream().filter(x-> (int)x.findAttribute(TicTacToeNode.ATTR_SYMBOL)==symbol
                 && (int)x.findAttribute(TicTacToeNode.ATTR_MOVE)==position).collect(Collectors.toList());
@@ -35,7 +41,7 @@ public class LogicHelper {
         return candidates;
     }
 
-    public static List<Integer> getFreePlaces(final List<Integer> board){
+    public static void initFreePlaces(final List<Integer> board){
 
         List<Integer> r = new ArrayList<>();
         for(int i=0; i< board.size(); i++){
@@ -43,7 +49,7 @@ public class LogicHelper {
                 r.add(i);
             }
         }
-        return r;
+        freePlaces=r;
     }
 
     private static boolean hasWinningLeaf(TicTacToeNode n, int symbol) {

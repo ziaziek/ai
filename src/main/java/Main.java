@@ -16,7 +16,7 @@ public class Main {
         settings.setVerbose(args.length>1 && args[1].equalsIgnoreCase("-verbose"));
         LearnSettings learnSettings= new LearnSettings();
         learnSettings.setPercentageOfNodes(50);
-        //learnSettings.setSecondsToFinish(120);
+        learnSettings.setSecondsToFinish(120);
         DecisionTree tree = new DecisionTree(new TicTacToeNode());
         new GameRunner(new AutoPlayer(GameManager.DEFAULT_BOARD_SIZE),
                 new DecisionTreeBuilder(

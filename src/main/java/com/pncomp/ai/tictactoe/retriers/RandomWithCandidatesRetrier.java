@@ -17,8 +17,8 @@ public class RandomWithCandidatesRetrier extends RandomRetrier {
 
     private List<TreeNode> candidates;
 
-    public RandomWithCandidatesRetrier(final int boardLength, List<Integer> freePlaces){
-        super(boardLength, freePlaces);
+    public RandomWithCandidatesRetrier(final int boardLength){
+        super(boardLength);
     }
 
     @Override

@@ -18,17 +18,14 @@ public class RandomRetrier implements Retrier {
 
     protected final int boardLength;
 
-    private List<Integer> freePlaces;
-
     public void setSettings(Settings settings) {
         this.settings = settings;
     }
 
     protected Settings settings;
 
-    public RandomRetrier(int boardLength, List<Integer> fp){
+    public RandomRetrier(int boardLength){
         this.boardLength=boardLength;
-        freePlaces=fp;
     }
 
     @Override
@@ -36,22 +33,8 @@ public class RandomRetrier implements Retrier {
         return makeRandomMove(boardLength);
     }
 
-    @Subscribe
-    private void handleGameEvent(final GameEvent event){
-        freePlaces= LogicHelper.getFreePlaces(event.getState().getBoard());
-    }
-
-    @Subscribe
-    private void handleNewGame(final NewGameEvent event){
-        freePlaces=new ArrayList<>();
-        for(int i=0; i<event.getBoardSize(); i++){
-            freePlaces.add(i);
-        }
-    }
-
     protected int makeRandomMove(int boardSize) {
-        Integer p = freePlaces.get(random.nextInt(freePlaces.size()));
-        freePlaces.remove(p);
+        Integer p = LogicHelper.getFreePlaces().get(random.nextInt(LogicHelper.getFreePlaces().size()));
         return p;
     }
 }
