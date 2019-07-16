@@ -1,5 +1,6 @@
 package com.pncomp.ai.tictactoe;
 
+import com.pncomp.ai.Settings;
 import com.pncomp.ai.tictactoe.events.EventBusFactory;
 import com.pncomp.ai.tictactoe.events.GameEvent;
 import com.pncomp.ai.tictactoe.events.GameOverEvent;
@@ -16,6 +17,8 @@ public class GameManager {
     public String getEventBusName() {
         return eventBusName;
     }
+
+    private Settings settings;
 
     public void setEventBusName(String eventBusName) {
         this.eventBusName = eventBusName;
@@ -67,14 +70,15 @@ public class GameManager {
     private int size=DEFAULT_BOARD_SIZE;
     private int nPlayers=2;
 
-    public GameManager(){
-        this(DEFAULT_BOARD_SIZE);
+    public GameManager(Settings settings){
+        this(settings, DEFAULT_BOARD_SIZE);
     }
 
-    public GameManager(final int size){
+    public GameManager(Settings settings, final int size){
         initBoard(size);
         this.size=size;
         this.maxDecisionTreeNodes=countMaxAllAvailableNodes(size);
+        this.settings=settings;
     }
 
     private void initBoard(int size){
@@ -92,7 +96,6 @@ public class GameManager {
             }
             return true;
         } else {
-            //System.out.println("Cannot place symmbol there. Try again.");
             return false;
         }
     }
@@ -115,7 +118,9 @@ public class GameManager {
 
     private void doGameOver(int symbol, int place) {
         gameOver=true;
-        System.out.println("Game over.");
+        if(!settings.isLearnSelf()){
+            System.out.println("Game over.");
+        }
         EventBusFactory.getEventBus(eventBusName).post(new GameOverEvent(this, new BoardState(place, symbol, getBoard()), currentPlayer));
     }
 
@@ -149,7 +154,9 @@ public class GameManager {
         boolean p = sameSymbolInRow(symbol, place) || sameSymbolInColumn(symbol, place) || sameSymbolDiagonal(symbol, place);
         if (p) {
             winningPlayer = currentPlayer;
-            System.out.println("Player " + winningPlayer + " wins.");
+            if(!settings.isLearnSelf()){
+                System.out.println("Player " + winningPlayer + " wins.");
+            }
         }
         return p;
     }
