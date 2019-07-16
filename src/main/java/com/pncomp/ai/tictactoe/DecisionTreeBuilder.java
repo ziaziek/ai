@@ -93,7 +93,6 @@ public class DecisionTreeBuilder {
 
     @Subscribe
     public void handleNewGame(NewGameEvent event){
-        System.out.println("New game. Resetting.");
         this.currentNode= (TicTacToeNode) this.getDecisionTree().getRootNode();
     }
 

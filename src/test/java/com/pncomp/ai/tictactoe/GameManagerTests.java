@@ -1,5 +1,6 @@
 package com.pncomp.ai.tictactoe;
 
+import com.pncomp.ai.Settings;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -7,13 +8,14 @@ import static org.junit.Assert.assertTrue;
 
 public class GameManagerTests {
 
-    private final GameManager gm = new GameManager();
+    private final Settings settings = new Settings();
+    private final GameManager gm = new GameManager(settings);
 
     @Test
     public void initTest(){
-        GameManager gm = new GameManager();
+        GameManager gm = new GameManager(settings);
         assertEquals(9, gm.getBoard().size());
-        gm = new GameManager(5);
+        gm = new GameManager(settings,5);
         assertEquals(25, gm.getBoard().size());
     }
 
@@ -82,7 +84,7 @@ public class GameManagerTests {
         int[] board = new int[]{-1, 1, -1,
                 -1, 1, -1,
                 1, -1, 0};
-        GameBoardManager bm = new GameBoardManager();
+        GameBoardManager bm = new GameBoardManager(settings);
         bm.setBoard(board);
         bm.placeSymbol(1, 2, 2);
         assertTrue(bm.isDraw());
@@ -90,6 +92,10 @@ public class GameManagerTests {
     }
 
     private class GameBoardManager extends GameManager {
+
+        public GameBoardManager(Settings settings) {
+            super(settings);
+        }
 
         void setBoard(int[] boardArray) {
             board = boardArray;
