@@ -4,6 +4,8 @@ public class Settings {
 
     public static final String DECISION_TREE_FILE_NAME="dt.xml";
 
+    public static final String separator = ",";
+
     public boolean isLearnSelf() {
         return learnSelf;
     }

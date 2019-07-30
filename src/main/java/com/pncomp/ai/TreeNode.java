@@ -28,6 +28,16 @@ public class TreeNode {
 
     private Map<String, Object> attributes = new HashMap<>();
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
+
     protected Set<TreeNode> children = new HashSet<>();
 
     @XmlTransient

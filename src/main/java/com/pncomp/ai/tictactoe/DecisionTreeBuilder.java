@@ -36,6 +36,8 @@ public class DecisionTreeBuilder {
 
     private final DecisionTree decisionTree;
 
+    private Long currentId=0L;
+
     public DecisionTreeBuilder(DecisionTree decisionTree) {
         this.decisionTree = decisionTree;
         this.currentNode= (TicTacToeNode) decisionTree.getRootNode();
@@ -52,6 +54,8 @@ public class DecisionTreeBuilder {
 
         TicTacToeNode node = new TicTacToeNode();
         node.setMove(position, symbol);
+        currentId++;
+        node.setId(currentId);
         return node;
     }
 
