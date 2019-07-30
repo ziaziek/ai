@@ -1,6 +1,7 @@
 package com.pncomp.ai.tictactoe;
 
 import com.pncomp.ai.DecisionTree;
+import com.pncomp.ai.Settings;
 import com.pncomp.ai.TreeNode;
 import com.pncomp.ai.tictactoe.events.EventBusFactory;
 
@@ -20,7 +21,7 @@ public class ExampleDecisionTree extends DecisionTree {
     }
 
     private void fillRootNode() {
-        GameManager gm = new GameManager();
+        GameManager gm = new GameManager(new Settings());
         gm.setEventBusName("example");
         DecisionTreeBuilder builder = new DecisionTreeBuilder(this);
         EventBusFactory.getEventBus("example").register(builder);

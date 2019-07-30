@@ -1,8 +1,15 @@
 package com.pncomp.ai.tictactoe.retriers;
 
+import com.google.common.eventbus.Subscribe;
 import com.pncomp.ai.Settings;
 import com.pncomp.ai.tictactoe.GameManager;
+import com.pncomp.ai.tictactoe.LogicHelper;
+import com.pncomp.ai.tictactoe.events.GameEvent;
+import com.pncomp.ai.tictactoe.events.NewGameEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class RandomRetrier implements Retrier {
@@ -27,6 +34,7 @@ public class RandomRetrier implements Retrier {
     }
 
     protected int makeRandomMove(int boardSize) {
-        return  random.nextInt(boardSize);
+        Integer p = LogicHelper.getFreePlaces().get(random.nextInt(LogicHelper.getFreePlaces().size()));
+        return p;
     }
 }

@@ -4,7 +4,12 @@ package com.pncomp.ai.tictactoe;
 import com.pncomp.ai.tictactoe.retriers.RandomRetrier;
 import com.pncomp.ai.tictactoe.retriers.Retrier;
 
+
 public class AutoPlayer implements PlayerInput{
+
+    public Retrier getRetrier() {
+        return retrier;
+    }
 
     private final Retrier retrier;
     private final int boardSize;
@@ -13,6 +18,7 @@ public class AutoPlayer implements PlayerInput{
         this.retrier = new RandomRetrier(boardSize * boardSize);
         this.boardSize=boardSize;
     }
+
 
     @Override
     public String readInput() {
@@ -28,4 +34,6 @@ public class AutoPlayer implements PlayerInput{
         }
         return null;
     }
+
+
 }
