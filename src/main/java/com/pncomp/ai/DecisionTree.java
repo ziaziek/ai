@@ -51,4 +51,16 @@ public class DecisionTree<T extends TreeNode> {
         }
         return  c;
     }
+
+    public TreeNode findNodeForId(TreeNode n, long id) {
+        if(n.getId()==id){
+            return n;
+        } else {
+            for(TreeNode tn : n.getChildren()){
+                return findNodeForId(tn,id);
+            }
+        }
+        return null;
+    }
+
 }
