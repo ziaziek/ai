@@ -3,6 +3,17 @@ package com.pncomp.ai;
 public class Settings {
 
     public static final String DECISION_TREE_FILE_NAME="dt.xml";
+    public static final String TEMPORARY_FILE_NAME = "dt_temp.xml";
+
+    public int getSaveInterval() {
+        return saveInterval;
+    }
+
+    public void setSaveInterval(int saveInterval) {
+        this.saveInterval = saveInterval;
+    }
+
+    private int saveInterval = 180000; //3 minutes by default
 
     public boolean isLearnSelf() {
         return learnSelf;

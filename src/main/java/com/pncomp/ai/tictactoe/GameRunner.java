@@ -24,7 +24,7 @@ public class GameRunner {
     private final Settings settings;
     private DecisionTreeWriter decisionTreeWriter= new DecisionTreeFileWriter();
     private int gamesPlayed=0;
-    private long startTime;
+    private long startTime, saveTime;
 
     public GameRunner(PlayerInput scanner, LearnSettings learnSettings, Settings settings) {
         this(scanner, null, learnSettings, settings);
@@ -57,13 +57,6 @@ public class GameRunner {
     }
 
     private String readInput(GameManager manager, LearnSettings learnSettings, final boolean playOnDecision) {
-        if(settings.isLearnSelf() && gamesPlayed%10000==0){
-            try {
-                decisionTreeWriter.save(builder.getDecisionTree().getRootNode());
-            } catch (JAXBException e) {
-                e.printStackTrace();
-            }
-        }
         if(!playOnDecision){
             return playerInput.readInput();
         } else{
@@ -75,6 +68,7 @@ public class GameRunner {
                 if(p<=learnSettings.getPercentageOfNodes()/100 && (learnSettings.getSecondsToFinish()==0 || (System.currentTimeMillis()-startTime)<learnSettings.getSecondsToFinish()*1000)){
                     return "y";
                 } else {
+                    decisionTreeWriter.save(builder.getDecisionTree().getRootNode());
                     return "n";
                 }
             }
@@ -91,7 +85,12 @@ public class GameRunner {
         RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
         randomRetrier.setSettings(settings);
         randomWithCandidatesRetrier.setSettings(settings);
+        saveTime=System.currentTimeMillis();
         while(!gm.isGameOver()){
+            if(System.currentTimeMillis()-saveTime > settings.getSaveInterval()){
+                decisionTreeWriter.save(settings.TEMPORARY_FILE_NAME, builder.getDecisionTree().getRootNode());
+                saveTime=System.currentTimeMillis();
+            }
             int cp = gm.getCurrentPlayer();
             if(!settings.isLearnSelf()){
                 gm.printOutBoard();
