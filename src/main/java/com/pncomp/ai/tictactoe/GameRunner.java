@@ -48,12 +48,14 @@ public class GameRunner {
         boolean playOn=true;
         while(playOn){
             EventBusFactory.getEventBus().post(new NewGameEvent());
-            GameManager manager = new GameManager();
+            GameManager manager = new GameManager().withSettings(settings);
             playGame(builder,  manager);
-            System.out.println("Nowa gra? (Y/N)");
+            if(!settings.isLearnSelf() && settings.isVerbose())
+                System.out.println("Nowa gra? (Y/N)");
             playOn="y".equalsIgnoreCase(readInput(manager, learnSettings, true));
         }
-        System.out.printf("Thank you.");
+        if(!settings.isLearnSelf() && settings.isVerbose())
+            System.out.printf("Thank you.");
     }
 
     private String readInput(GameManager manager, LearnSettings learnSettings, final boolean playOnDecision) {
@@ -64,7 +66,8 @@ public class GameRunner {
                 //decide if the another game should be played
                 gamesPlayed++;
                 double p = (double)(builder.getDecisionTree().countAllNodes(builder.getDecisionTree().getRootNode()))/(double)(manager.getMaxDecisionTreeNodes());
-                System.out.println("Current percentage: "+ p+", number of all nodes:" + manager.getMaxDecisionTreeNodes());
+                if(settings.isVerbose())
+                    System.out.println("Current percentage: "+ p+", number of all nodes:" + manager.getMaxDecisionTreeNodes());
                 if(p<=learnSettings.getPercentageOfNodes()/100 && (learnSettings.getSecondsToFinish()==0 || (System.currentTimeMillis()-startTime)<learnSettings.getSecondsToFinish()*1000)){
                     return "y";
                 } else {
@@ -133,7 +136,8 @@ public class GameRunner {
 
     private void playerMakesMove(final String coordinates, GameManager gm) {
         int currentSymbol;
-        System.out.println("Make a move (enter coordinates): ");
+        if(!settings.isLearnSelf())
+            System.out.println("Make a move (enter coordinates): ");
         int[] coords= getUserCoordinates(coordinates);
         currentSymbol=gm.getCurrentPlayerSymbol();
         gm.placeSymbol(currentSymbol, coords[0], coords[1]);
@@ -144,7 +148,8 @@ public class GameRunner {
 
     private int[] getUserCoordinates(final String coords) {
         String[] coordinates = coords.split(",");
-        Arrays.stream(coordinates).forEach(System.out::println);
+        if(!settings.isLearnSelf())
+            Arrays.stream(coordinates).forEach(System.out::println);
         return new int[] {Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])};
     }
 }

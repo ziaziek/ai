@@ -1,5 +1,6 @@
 package com.pncomp.ai.tictactoe;
 
+import com.pncomp.ai.Settings;
 import com.pncomp.ai.tictactoe.events.EventBusFactory;
 import com.pncomp.ai.tictactoe.events.GameEvent;
 import com.pncomp.ai.tictactoe.events.GameOverEvent;
@@ -59,6 +60,13 @@ public class GameManager {
 
     private int currentPlayer;
 
+    private Settings settings;
+
+    public GameManager withSettings(Settings settings){
+        this.settings = settings;
+        return this;
+    }
+
     public int getWinningPlayer() {
         return winningPlayer;
     }
@@ -114,7 +122,8 @@ public class GameManager {
 
     private void doGameOver(int symbol, int place) {
         gameOver=true;
-        System.out.println("Game over.");
+        if(settings==null || !settings.isLearnSelf())
+            System.out.println("Game over.");
         EventBusFactory.getEventBus(eventBusName).post(new GameOverEvent(this, new BoardState(place, symbol), currentPlayer));
     }
 
@@ -148,7 +157,8 @@ public class GameManager {
         boolean p = sameSymbolInRow(symbol, place) || sameSymbolInColumn(symbol, place) || sameSymbolDiagonal(symbol, place);
         if (p) {
             winningPlayer = currentPlayer;
-            System.out.println("Player " + winningPlayer + " wins.");
+            if(settings ==null || !settings.isLearnSelf())
+                System.out.println("Player " + winningPlayer + " wins.");
         }
         return p;
     }
