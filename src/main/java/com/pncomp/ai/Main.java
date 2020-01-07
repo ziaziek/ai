@@ -1,6 +1,5 @@
+package com.pncomp.ai;
 
-import com.pncomp.ai.DecisionTree;
-import com.pncomp.ai.Settings;
 import com.pncomp.ai.io.DecisionTreeFileReader;
 import com.pncomp.ai.io.DecisionTreeFileWriter;
 import com.pncomp.ai.tictactoe.*;
@@ -14,8 +13,8 @@ public class Main {
         settings.setLearnSelf(args.length>0 && args[0].equalsIgnoreCase("-learnself"));
         settings.setVerbose(args.length>1 && args[1].equalsIgnoreCase("-verbose"));
         LearnSettings learnSettings= new LearnSettings();
-        learnSettings.setPercentageOfNodes(50);
-        learnSettings.setSecondsToFinish(120);
+        learnSettings.setPercentageOfNodes(80);
+        learnSettings.setSecondsToFinish(7200);
         DecisionTree tree = null;
         if(settings.isLearnSelf()){
             tree = new DecisionTree(new TicTacToeNode());

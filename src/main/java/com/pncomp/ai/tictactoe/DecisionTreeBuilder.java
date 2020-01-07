@@ -68,12 +68,12 @@ public class DecisionTreeBuilder {
         //check if the tree needs adding a new node
         if(!(event instanceof GameOverEvent)){
             TreeNode potentialNode = buildNewNode(event.getState().getSymbol(), event.getState().getPosition());
-            if(settings.isVerbose()){
+            if(settings !=null && settings.isVerbose()){
                 System.out.println("Checking if a new tree node is required.");
             }
             BoardState state = event.getState();
             if (currentNode.isLeafNode()) {
-                if(settings.isVerbose()){
+                if(settings!=null && settings.isVerbose()){
                     System.out.println("This is a leaf node, so I need to add a new node");
                 }
                 TreeNode node = buildNewNode(state.getSymbol(), state.getPosition());
