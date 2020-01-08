@@ -13,7 +13,7 @@ public class Settings {
         this.saveInterval = saveInterval;
     }
 
-    private int saveInterval = 180000; //3 minutes by default
+    private int saveInterval = 120000; //3 minutes by default
 
     public boolean isLearnSelf() {
         return learnSelf;

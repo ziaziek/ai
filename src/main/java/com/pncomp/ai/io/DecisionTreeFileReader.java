@@ -14,10 +14,15 @@ public class DecisionTreeFileReader<E extends TreeNode> implements DecisionTreeR
 
     @Override
     public E read() {
+        return read(Settings.DECISION_TREE_FILE_NAME);
+    }
+
+    @Override
+    public E read(String filename) {
         try {
             JAXBContext context = JAXBContext.newInstance(TicTacToeNode.class);
             Unmarshaller unmasrshaller = context.createUnmarshaller();
-            E root = (E)(unmasrshaller.unmarshal(new File(Settings.DECISION_TREE_FILE_NAME)));
+            E root = (E)(unmasrshaller.unmarshal(new File(filename)));
             return root;
         } catch (JAXBException e) {
             e.printStackTrace();

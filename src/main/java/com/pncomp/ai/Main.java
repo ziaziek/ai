@@ -4,6 +4,7 @@ import com.pncomp.ai.io.DecisionTreeFileReader;
 import com.pncomp.ai.io.DecisionTreeFileWriter;
 import com.pncomp.ai.tictactoe.*;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -17,7 +18,13 @@ public class Main {
         learnSettings.setSecondsToFinish(7200);
         DecisionTree tree = null;
         if(settings.isLearnSelf()){
-            tree = new DecisionTree(new TicTacToeNode());
+
+            if(Arrays.stream(args).anyMatch(x -> x.equals("-continue"))){
+                tree = new DecisionTree(new DecisionTreeFileReader().read(Settings.TEMPORARY_FILE_NAME));
+            } else {
+                tree = new DecisionTree(new TicTacToeNode());
+            }
+
             new GameRunner(new AutoPlayer(GameManager.DEFAULT_BOARD_SIZE),
                     new DecisionTreeBuilder(
                             tree), learnSettings, settings).run();

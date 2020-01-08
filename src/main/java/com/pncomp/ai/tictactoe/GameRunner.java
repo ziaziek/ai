@@ -24,7 +24,7 @@ public class GameRunner {
     private final Settings settings;
     private DecisionTreeWriter decisionTreeWriter= new DecisionTreeFileWriter();
     private int gamesPlayed=0;
-    private long startTime, saveTime;
+    private long startTime, saveTime=System.currentTimeMillis();
 
     public GameRunner(PlayerInput scanner, LearnSettings learnSettings, Settings settings) {
         this(scanner, null, learnSettings, settings);
@@ -88,11 +88,12 @@ public class GameRunner {
         RandomWithCandidatesRetrier randomWithCandidatesRetrier = new RandomWithCandidatesRetrier(gm.getBoard().size());
         randomRetrier.setSettings(settings);
         randomWithCandidatesRetrier.setSettings(settings);
-        saveTime=System.currentTimeMillis();
         while(!gm.isGameOver()){
-            if(System.currentTimeMillis()-saveTime > settings.getSaveInterval()){
+            long currentTime = System.currentTimeMillis();
+            if(currentTime-saveTime > settings.getSaveInterval()){
+                saveTime=currentTime;
+                System.out.println("Saving temp file.");
                 decisionTreeWriter.save(settings.TEMPORARY_FILE_NAME, builder.getDecisionTree().getRootNode());
-                saveTime=System.currentTimeMillis();
             }
             int cp = gm.getCurrentPlayer();
             if(!settings.isLearnSelf()){
