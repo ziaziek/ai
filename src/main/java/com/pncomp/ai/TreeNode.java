@@ -1,15 +1,25 @@
 package com.pncomp.ai;
 
-import java.util.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+@XmlRootElement(name="node")
 public class TreeNode {
 
+    @XmlElement
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return attributes;
     }
 
+    @XmlElementRef
     public Set<TreeNode> getChildren() {
-        return Collections.unmodifiableSet(children);
+        return children;
     }
 
     public void setChildren(Set<TreeNode> children) {
@@ -20,6 +30,7 @@ public class TreeNode {
 
     protected Set<TreeNode> children = new HashSet<>();
 
+    @XmlTransient
     public TreeNode getParent() {
         return parent;
     }
@@ -28,6 +39,7 @@ public class TreeNode {
             this.parent=parent;
     }
 
+    @XmlTransient
     private TreeNode parent;
 
     /**
@@ -69,5 +81,22 @@ public class TreeNode {
         StringBuilder sb = new StringBuilder();
         getAttributes().forEach((x,y)-> {sb.append(x); sb.append(": "); sb.append(y.toString()); sb.append("\n");});
         return sb.toString();
+    }
+
+    public boolean isLike(Object obj) {
+        if(obj==null || ! (obj instanceof TreeNode)){
+            return false;
+        }
+        TreeNode tn = (TreeNode) obj;
+         return hasSameAttributes(tn);
+    }
+
+    private boolean hasSameAttributes(TreeNode tn){
+        for(String s: attributes.keySet()){
+            if(!attributes.get(s).equals(tn.findAttribute(s))){
+                return false;
+            }
+        }
+        return true;
     }
 }

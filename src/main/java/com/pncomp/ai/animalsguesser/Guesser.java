@@ -3,6 +3,7 @@ package com.pncomp.ai.animalsguesser;
 import com.pncomp.ai.BinaryNode;
 import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.TreeNode;
+
 import java.util.Scanner;
 
 public class Guesser {

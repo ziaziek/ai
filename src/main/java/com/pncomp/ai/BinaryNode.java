@@ -1,7 +1,9 @@
 package com.pncomp.ai;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
+@XmlRootElement
 public class BinaryNode extends TreeNode {
 
 

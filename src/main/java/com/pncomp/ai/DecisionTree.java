@@ -1,10 +1,13 @@
 package com.pncomp.ai;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DecisionTree<T extends TreeNode> {
 
+    @XmlElement(name="node")
     public T getRootNode() {
         return rootNode;
     }
