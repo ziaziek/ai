@@ -12,8 +12,11 @@ import com.pncomp.ai.tictactoe.retriers.RandomWithCandidatesRetrier;
 import com.pncomp.ai.tictactoe.retriers.Retrier;
 
 import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class GameRunner {
 
@@ -50,11 +53,11 @@ public class GameRunner {
             EventBusFactory.getEventBus().post(new NewGameEvent());
             GameManager manager = new GameManager().withSettings(settings);
             playGame(builder,  manager);
-            if(!settings.isLearnSelf() && settings.isVerbose())
+            if(!settings.isLearnSelf() || (settings.isLearnSelf() && settings.isVerbose()))
                 System.out.println("Nowa gra? (Y/N)");
             playOn="y".equalsIgnoreCase(readInput(manager, learnSettings, true));
         }
-        if(!settings.isLearnSelf() && settings.isVerbose())
+        if(!settings.isLearnSelf() || (settings.isLearnSelf() && settings.isVerbose()))
             System.out.printf("Thank you.");
     }
 
@@ -62,7 +65,7 @@ public class GameRunner {
         if(!playOnDecision){
             return playerInput.readInput();
         } else{
-            if(manager!=null && learnSettings!=null){
+            if(manager!=null && settings.isLearnSelf() && learnSettings!=null){
                 //decide if the another game should be played
                 gamesPlayed++;
                 double p = (double)(builder.getDecisionTree().countAllNodes(builder.getDecisionTree().getRootNode()))/(double)(manager.getMaxDecisionTreeNodes());
@@ -75,7 +78,13 @@ public class GameRunner {
                     return "n";
                 }
             }
-            return "y";
+            byte[] b = new byte[1];
+            try {
+                System.in.read(b);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new String(b);
         }
     }
 
@@ -92,7 +101,9 @@ public class GameRunner {
             long currentTime = System.currentTimeMillis();
             if(currentTime-saveTime > settings.getSaveInterval()){
                 saveTime=currentTime;
-                System.out.println("Saving temp file.");
+                System.out.println("Saving temp file. Current nodes number: "+ builder.getDecisionTree().countAllNodes(
+                        builder.getDecisionTree().getRootNode()
+                ));
                 decisionTreeWriter.save(settings.TEMPORARY_FILE_NAME, builder.getDecisionTree().getRootNode());
             }
             int cp = gm.getCurrentPlayer();
@@ -101,6 +112,8 @@ public class GameRunner {
             }
 
             while (cp == gm.getCurrentPlayer() && !gm.isGameOver()) {
+                if(!settings.isLearnSelf())
+                    System.out.println("Make a move (enter coordinates): ");
                 playerMakesMove(readInput(null, learnSettings, false), gm);
             }
 
@@ -137,8 +150,6 @@ public class GameRunner {
 
     private void playerMakesMove(final String coordinates, GameManager gm) {
         int currentSymbol;
-        if(!settings.isLearnSelf())
-            System.out.println("Make a move (enter coordinates): ");
         int[] coords= getUserCoordinates(coordinates);
         currentSymbol=gm.getCurrentPlayerSymbol();
         gm.placeSymbol(currentSymbol, coords[0], coords[1]);

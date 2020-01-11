@@ -29,7 +29,11 @@ public class Main {
                     new DecisionTreeBuilder(
                             tree), learnSettings, settings).run();
         } else {
+            System.out.println("Reading in decision tree. Please wait ...");
             tree = new DecisionTree(new DecisionTreeFileReader().read());
+            new GameRunner(new SystemInPlayer(),
+                    new DecisionTreeBuilder(
+                            tree), learnSettings, settings).run();
         }
         new DecisionTreeFileWriter().save(tree.getRootNode());
     }
