@@ -18,10 +18,12 @@ public class DecisionTreeFileWriter implements DecisionTreeWriter {
     @Override
     public void save(String filename, TreeNode node) {
         try{
-            JAXBContext context = JAXBContext.newInstance(node.getClass());
-            Marshaller marshaller=context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(node, new File(filename));
+            synchronized (this){
+                JAXBContext context = JAXBContext.newInstance(node.getClass());
+                Marshaller marshaller=context.createMarshaller();
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                marshaller.marshal(node, new File(filename));
+            }
         } catch (JAXBException e) {
             e.printStackTrace();
         }

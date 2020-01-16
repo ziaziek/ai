@@ -5,11 +5,12 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventBusFactory {
 
     private static EventBus eventBus;
-    private static Map<String, EventBus> namedEventBus = new HashMap<>();
+    private static Map<String, EventBus> namedEventBus = new ConcurrentHashMap<>();
 
     public static EventBus getEventBus(){
         if(eventBus==null){
@@ -18,16 +19,19 @@ public class EventBusFactory {
         return eventBus;
     }
 
-    public static void buildEventBus(final String name){
+    public static EventBus buildEventBus(final String name){
         if(canBuildEventBus(name)){
-            namedEventBus.put(name, new EventBus(name));
+            EventBus bus = new EventBus(name);
+            namedEventBus.put(name, bus);
+            System.out.println("Registered new event bus "+ name);
+            return bus;
         } else {
             throw new IllegalStateException("There is an Event Bus with this name. ["+ name+"]");
         }
     }
 
     public static EventBus getEventBus(final String name){
-        if(Strings.isNullOrEmpty(name)){
+        if(Strings.isNullOrEmpty(name) || "default".equals(name)){
             return getEventBus();
         } else {
             return namedEventBus.get(name);

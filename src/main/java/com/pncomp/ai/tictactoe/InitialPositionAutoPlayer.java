@@ -1,11 +1,14 @@
 package com.pncomp.ai.tictactoe;
 
 import com.google.common.eventbus.Subscribe;
-import com.pncomp.ai.tictactoe.events.EventBusFactory;
 import com.pncomp.ai.tictactoe.events.NewGameEvent;
 
 public class InitialPositionAutoPlayer extends AutoPlayer {
 
+
+    public int getInitialPositionField() {
+        return initialPositionField;
+    }
 
     private final int initialPositionField;
     private boolean firstMove;
@@ -13,7 +16,6 @@ public class InitialPositionAutoPlayer extends AutoPlayer {
     public InitialPositionAutoPlayer(final int boardSize, int positionField, final String eventBusName){
         super(boardSize);
         this.initialPositionField=positionField;
-        EventBusFactory.getEventBus(eventBusName).register(this);
     }
 
     @Override
