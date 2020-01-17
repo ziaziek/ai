@@ -1,7 +1,6 @@
 package com.pncomp.ai.tictactoe.retriers;
 
 import com.pncomp.ai.Settings;
-import com.pncomp.ai.tictactoe.GameManager;
 
 import java.util.Random;
 

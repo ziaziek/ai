@@ -22,7 +22,7 @@ public class GameManager {
         this.eventBusName = eventBusName;
     }
 
-    private String eventBusName=null;
+    private String eventBusName;
 
     public long getMaxDecisionTreeNodes() {
         return maxDecisionTreeNodes;
@@ -73,7 +73,6 @@ public class GameManager {
 
     private int winningPlayer = -1;
     private int size=DEFAULT_BOARD_SIZE;
-    private int nPlayers=2;
 
     public GameManager(){
         this(DEFAULT_BOARD_SIZE);
@@ -129,7 +128,8 @@ public class GameManager {
 
     private void nextPlayer(int symbol, int place) {
         EventBusFactory.getEventBus(eventBusName).post(new GameEvent(this, new BoardState(place, symbol), currentPlayer));
-        currentPlayer=(currentPlayer+1)%nPlayers;
+        int nPlayers = 2;
+        currentPlayer=(currentPlayer+1)% nPlayers;
     }
 
     public void placeSymbol(int symbol, int x, int y){

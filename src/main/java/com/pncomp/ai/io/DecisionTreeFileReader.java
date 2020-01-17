@@ -1,6 +1,5 @@
 package com.pncomp.ai.io;
 
-import com.pncomp.ai.DecisionTree;
 import com.pncomp.ai.Settings;
 import com.pncomp.ai.TreeNode;
 import com.pncomp.ai.tictactoe.TicTacToeNode;
